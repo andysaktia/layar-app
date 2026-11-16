@@ -1,0 +1,208 @@
+# Layar
+
+> Catat film dan drama yang sudah kamu tonton, lalu lihat berapa lama waktu yang sudah kamu habiskan di depan layar seumur hidup.
+
+![Aplikasi statis](https://img.shields.io/badge/aplikasi-statis%20(tanpa%20build)-4fd1c5)
+![PWA](https://img.shields.io/badge/PWA-siap%20dipasang-f5b942)
+![Tanpa backend](https://img.shields.io/badge/backend-tidak%20ada-93a0bf)
+
+**Layar** adalah aplikasi web satu halaman (HTML, CSS, dan JavaScript murni) untuk mencatat tontonan pribadi. Tidak ada server, akun, atau database: data tersimpan di browser penggunanya, dan setiap pengguna memakai API key miliknya sendiri.
+
+<!-- Tambahkan tangkapan layar di docs/screenshots/ lalu aktifkan tabel di bawah.
+| Beranda | Swipe cepat | Jelajah |
+|---|---|---|
+| ![Beranda](docs/screenshots/home.png) | ![Swipe](docs/screenshots/swipe.png) | ![Jelajah](docs/screenshots/explore.png) |
+-->
+
+## Daftar isi
+
+- [Fitur](#fitur)
+- [Mode penggunaan](#mode-penggunaan)
+- [Mulai cepat](#mulai-cepat)
+- [Mendapatkan API key](#mendapatkan-api-key)
+- [Deploy](#deploy)
+- [Data dan privasi](#data-dan-privasi)
+- [Arsitektur](#arsitektur)
+- [Struktur proyek](#struktur-proyek)
+- [Rencana pengembangan](#rencana-pengembangan)
+- [Atribusi dan lisensi data](#atribusi-dan-lisensi-data)
+- [Lisensi](#lisensi)
+
+## Fitur
+
+| Halaman | Kegunaan |
+|---|---|
+| **Beranda** | Total waktu tontonan seumur hidup, statistik ringkas, target berikutnya, dan poster "Terakhir ditonton" |
+| **Cari** | Cari judul film dan drama, riwayat pencarian, dan tambah manual untuk judul yang tidak ditemukan |
+| **Swipe** | Geser kanan kalau sudah nonton, kiri kalau belum. Cara tercepat mengisi riwayat awal |
+| **Jelajah** | Temukan tontonan baru. Dengan TMDB tersedia filter genre, urutan Terbaru, Populer, Rating, dan nomor halaman |
+| **Daftar** | Semua judul yang sudah dicentang, dengan filter Film dan Drama |
+
+Fitur lainnya:
+
+- **Modal detail**: judul, sinopsis, tahun, durasi, rating, genre, sutradara dan pemeran.
+- **Hitung durasi drama per season**, jadi pengguna bisa memilih season yang sudah ditonton. Durasi dijumlah dari tiap episode.
+- **Tema gelap dan terang** (gelap sebagai bawaan).
+- **PWA**: bisa dipasang ke layar utama, dan beranda, total, serta daftar bisa dibuka offline.
+- **Ekspor dan impor JSON** untuk cadangan.
+- **Navigasi bawah** di HP dan tab di layar lebar.
+- **Pintasan keyboard** di halaman Swipe: panah kiri dan kanan untuk memilih, `Backspace` atau `Z` untuk membatalkan.
+- **Alamat per halaman** lewat hash: `#home`, `#search`, `#swipe`, `#explore`, `#list`.
+
+## Mode penggunaan
+
+Layar memilih mode otomatis berdasarkan API key yang diisi di Pengaturan.
+
+| Mode | Syarat | Sumber data | Cocok untuk |
+|---|---|---|---|
+| **Contoh** | Tidak ada key | 24 judul dummy bawaan (tanpa internet) | Melihat-lihat fitur, demo, atau showcase |
+| **Cepat** | Key OMDb | Film dari OMDb, drama dari TVmaze | Mencentang riwayat dengan cepat |
+| **Lengkap** | Key TMDB | Jelajah dan detail dari TMDB, pencarian tetap TVmaze dan OMDb | Mencari tontonan baru dengan filter genre, Terbaru, dan halaman |
+
+Catatan:
+
+- Di **Mode Contoh**, semua judul adalah data dummy. Ada banner dan modal peringatan yang meminta pengguna mengisi API key.
+- Judul contoh yang dicentang **dihapus otomatis** saat pengguna mengisi key. Judul asli yang ditambahkan manual tidak ikut terhapus.
+- Pengisian kolom TMDB mengaktifkan mode Lengkap. Mengosongkannya kembali ke mode Cepat (atau Contoh bila OMDb juga kosong).
+
+## Mulai cepat
+
+Layar adalah situs statis tanpa langkah build.
+
+```bash
+git clone https://github.com/<username>/<nama-repo>.git
+cd <nama-repo>
+
+# Jalankan lewat server lokal (service worker tidak aktif jika dibuka dengan file://)
+python3 -m http.server 8080
+# atau
+npx serve .
+```
+
+Buka `http://localhost:8080`. Tanpa key, aplikasi langsung berjalan di Mode Contoh.
+
+## Mendapatkan API key
+
+Key bersifat opsional dan **diisi sendiri oleh tiap pengguna** di **Pengaturan** (ikon di kanan atas). Key tersimpan hanya di browser.
+
+**OMDb (film, mode Cepat), gratis**
+
+1. Buka <https://www.omdbapi.com/apikey.aspx> dan pilih **FREE**.
+2. Isi nama dan email, lalu klik link aktivasi yang dikirim ke emailmu.
+3. Tempel key di kolom *OMDb API Key*. Batas gratis: 1.000 permintaan per hari per key.
+
+**TMDB (mode Lengkap), gratis untuk non-komersial**
+
+1. Buat akun di <https://www.themoviedb.org> dan verifikasi emailnya.
+2. Buka *Settings → API*, lalu ajukan key bertipe *Developer* (penggunaan pribadi).
+3. Tempel *API Key (v3)* atau *API Read Access Token* di kolom *TMDB API Key*.
+
+> **Jangan pernah meng-commit API key ke repo.** Layar tidak membutuhkannya di dalam kode. Kalau key terlanjur ter-commit, anggap sudah bocor dan buat key baru.
+
+## Deploy
+
+**Vercel**
+
+1. Impor repo di Vercel.
+2. *Framework Preset*: **Other**. Kosongkan *Build Command* dan *Output Directory*.
+3. Deploy.
+
+**GitHub Pages**
+
+1. Buka *Settings → Pages*.
+2. *Source*: branch `main`, folder `/ (root)`.
+
+Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (misalnya `username.github.io/nama-repo/`).
+
+**Memperbarui PWA:** naikkan konstanta `VERSION` di `sw.js` setiap rilis besar. Halaman utama selalu diambil dari jaringan lebih dulu, jadi pembaruan ikut masuk saat pengguna online.
+
+## Data dan privasi
+
+- Tidak ada server milik Layar, dan tidak ada data pengguna yang dikirim ke pihak lain selain permintaan pencarian ke API publik (TVmaze, OMDb, TMDB) langsung dari browser.
+- Data disimpan di `localStorage` browser:
+
+| Kunci | Isi |
+|---|---|
+| `layar.items` | Daftar tontonan |
+| `layar.omdb`, `layar.tmdb` | API key milik pengguna |
+| `layar.theme` | Tema terang atau gelap |
+| `layar.skip` | Judul yang digeser ke kiri di Swipe |
+| `layar.rc` | Riwayat pencarian |
+
+- Membersihkan data browser menghapus semuanya. Gunakan **Ekspor** di Pengaturan sebagai cadangan, dan **Impor** untuk memulihkannya.
+- Ekspor hanya berisi daftar tontonan, **tidak** menyertakan API key.
+- Setiap entri tontonan disimpan dalam bentuk ringkas:
+
+```json
+{
+  "key": "tmdb-movie-603",
+  "type": "movie",
+  "title": "Judul",
+  "year": "1999",
+  "poster": "https://…",
+  "minutes": 136,
+  "eps": 0,
+  "at": 1760000000000
+}
+```
+
+## Arsitektur
+
+**Layer:** Consumer
+**Bergantung pada:** TVmaze API, OMDb API (opsional), TMDB API (opsional), dipanggil langsung dari browser
+**Dipakai oleh:** pengguna akhir
+**Status pengecualian arsitektur:** Tidak ada
+
+Layar tidak membundel dataset tontonan. Data sumber selalu ditarik dari API pihak ketiga, sedangkan daftar tontonan adalah data milik pengguna. Satu-satunya data yang dibundel adalah 24 judul dummy untuk Mode Contoh, yang hanya berfungsi sebagai demo dan tidak pernah bercampur dengan data asli.
+
+```
+TVmaze ──┐
+OMDb   ──┼─► diseragamkan ─► localStorage ─► total waktu dan daftar
+TMDB   ──┘   {key,type,title,year,poster,minutes,eps,at}
+```
+
+Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaze, `tmdb-…` TMDB, `demo-…` contoh, `manual-…` manual), sehingga modal detail tahu API mana yang harus dipanggil.
+
+**Batasan yang diketahui**
+
+- Judul yang sama bisa tercatat dua kali bila ditambahkan lewat sumber berbeda, karena ID antar sumber tidak disamakan.
+- Durasi disimpan saat judul dicentang dan tidak diperbarui otomatis.
+- Poster hanya ditautkan, tidak diunduh, dan tidak tersedia offline.
+- Key tersimpan di sisi browser. Untuk layanan yang dibuka banyak pengguna tanpa key masing-masing, diperlukan service layer tipis (misalnya fungsi serverless) yang menyimpan key di environment variable.
+
+## Struktur proyek
+
+```
+.
+├── index.html               # seluruh aplikasi (HTML, CSS, JS)
+├── manifest.webmanifest     # metadata PWA
+├── sw.js                    # service worker (cache shell, offline)
+├── icon-192.png
+├── icon-512.png
+├── icon-maskable-512.png
+└── README.md
+```
+
+## Rencana pengembangan
+
+- [ ] Edit season untuk drama yang sudah dicatat
+- [ ] Watchlist "Mau ditonton" dan tandai tonton ulang
+- [ ] Rating pribadi dan statistik per tahun atau genre
+- [ ] Filter negara dan bahasa (misalnya drama Korea, Jepang, Tiongkok)
+- [ ] Impor dari CSV (Letterboxd, IMDb)
+- [ ] Kartu statistik yang bisa dibagikan
+- [ ] Sinkron antar perangkat (membutuhkan service layer dan login)
+
+## Atribusi dan lisensi data
+
+Layar memakai data dari layanan berikut. Hormati syarat masing-masing, terutama bila repo ini dipublikasikan atau dikembangkan lebih jauh.
+
+- **TVmaze** (<https://www.tvmaze.com>): data drama dan serial. Berlisensi CC BY-SA, wajib mencantumkan atribusi.
+- **OMDb API** (<https://www.omdbapi.com>): data film. Menurut ringkasan di beberapa paket pihak ketiga, konten OMDb berlisensi CC BY-NC dan untuk pemakaian non-komersial. Cek syarat terbaru di situs resminya.
+- **TMDB** (<https://www.themoviedb.org>): *This product uses the TMDB API but is not endorsed or certified by TMDB.* Gratis untuk pemakaian non-komersial. Pemakaian komersial memerlukan perjanjian tertulis dengan TMDB. Syarat TMDB juga meminta logo TMDB bila aplikasi dipublikasikan, jadi tambahkan logonya sebelum dibagikan luas.
+
+Poster di Mode Contoh dibuat secara lokal dan bukan karya dari film atau drama sungguhan. Semua judul, sinopsis, dan nama di data contoh adalah fiksi.
+
+## Lisensi
+
+Kode di repo ini dirilis di bawah lisensi **MIT** (tambahkan berkas `LICENSE` berisi nama pemilik hak cipta dan tahun). Lisensi ini hanya berlaku untuk kode. Data dari TVmaze, OMDb, dan TMDB tetap tunduk pada syarat masing-masing, seperti dijelaskan di atas.
