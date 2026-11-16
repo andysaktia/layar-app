@@ -1,0 +1,124 @@
+/* Mode Swipe cepat: tumpukan kartu dan tombol aksi. */
+.deck {
+  position: relative;
+  width: min(340px, 100%);
+  aspect-ratio: 2/3;
+  max-height: 60vh;
+  margin: 8px auto 22px;
+}
+.sc {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--sf2);
+  border: 1px solid var(--ln);
+  z-index: calc(10 - var(--i));
+  transform: translateY(calc(var(--i) * 12px)) scale(calc(1 - var(--i) * 0.05));
+  transition:
+    transform 0.25s,
+    opacity 0.25s;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.sc.top {
+  cursor: grab;
+}
+.sc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.sc .ph {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--mu);
+}
+.sc .cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 48px 16px 16px;
+  background: linear-gradient(transparent, rgba(8, 12, 22, 0.92));
+  color: #fff;
+  pointer-events: none;
+}
+.sc .cap h3 {
+  font: 800 1.3rem/1.2 var(--h);
+}
+.sc .cap p {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+.stamp {
+  position: absolute;
+  top: 18px;
+  padding: 4px 12px;
+  border: 3px solid;
+  border-radius: 10px;
+  font: 800 1.2rem var(--h);
+  opacity: 0;
+  background: rgba(8, 12, 22, 0.5);
+}
+.stamp.y {
+  left: 16px;
+  color: #4fd1c5;
+  transform: rotate(-12deg);
+}
+.stamp.n {
+  right: 16px;
+  color: #ff7a7a;
+  transform: rotate(12deg);
+}
+.sbar {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+}
+.rb {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ln);
+  background: var(--sf);
+  padding: 0;
+}
+.rb svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.rb.yes {
+  width: 68px;
+  height: 68px;
+  background: var(--ac);
+  color: #1a1405;
+  border-color: var(--ac);
+}
+.rb.no {
+  color: var(--rd);
+}
+.rb.undo,
+.rb.info {
+  width: 46px;
+  height: 46px;
+  color: var(--mu);
+}
+.rb:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

@@ -1,0 +1,138 @@
+/* Navigasi bawah (HP) dan tab (desktop), serta pergantian halaman. */
+.nav .mid {
+  color: var(--tx);
+}
+.nav .mid svg {
+  width: 46px;
+  height: 46px;
+  padding: 11px;
+  margin-top: -22px;
+  background: var(--ac);
+  color: #1a1405;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  stroke-width: 2;
+}
+@media (min-width: 760px) {
+  .nav .mid svg {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    background: none;
+    color: inherit;
+    box-shadow: none;
+    border-radius: 0;
+    stroke-width: 1.8;
+  }
+  .qa {
+    max-width: 520px;
+  }
+}
+section[data-view] {
+  display: none;
+}
+body[data-page='home'] section[data-view='home'],
+body[data-page='search'] section[data-view='search'],
+body[data-page='swipe'] section[data-view='swipe'],
+body[data-page='explore'] section[data-view='explore'],
+body[data-page='list'] section[data-view='list'] {
+  display: block;
+}
+.hr {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ibtn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+.ibtn svg,
+.nav svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  background: var(--sf);
+  border-top: 1px solid var(--ln);
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.nav button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: 0;
+  color: var(--mu);
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 6px 0;
+  border-radius: 10px;
+}
+.nav button[aria-current='page'] {
+  color: var(--am);
+  font-weight: 700;
+}
+.wrap {
+  padding-bottom: 96px;
+}
+.toast {
+  bottom: 88px !important;
+}
+@media (max-width: 759px) {
+  .btn.sm,
+  .tab {
+    min-height: 40px;
+  }
+  .pill {
+    display: none;
+  }
+}
+@media (min-width: 760px) {
+  .nav {
+    position: static;
+    border: 0;
+    background: none;
+    padding: 0;
+    gap: 4px;
+    order: 0;
+  }
+  .nav button {
+    flex: none;
+    flex-direction: row;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 0.92rem;
+    border-radius: 99px;
+  }
+  .nav button[aria-current='page'] {
+    background: var(--sf2);
+  }
+  .nav button:hover {
+    color: var(--tx);
+  }
+  .wrap {
+    padding-bottom: 64px;
+  }
+  .toast {
+    bottom: 22px !important;
+  }
+}

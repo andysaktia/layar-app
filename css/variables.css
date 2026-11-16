@@ -1,0 +1,28 @@
+/* Design token: warna, font, dan tema gelap/terang. */
+:root {
+  --ac: #f5b942;
+  --bg: #0e1523;
+  --sf: #17203a;
+  --sf2: #1f2a4a;
+  --tx: #eaeef8;
+  --mu: #93a0bf;
+  --am: #f5b942;
+  --tl: #4fd1c5;
+  --rd: #ff7a7a;
+  --ln: #2a3760;
+  --h: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+  --b: 'DM Sans', system-ui, sans-serif;
+  color-scheme: dark;
+}
+:root[data-theme='light'] {
+  --bg: #f3f5fa;
+  --sf: #ffffff;
+  --sf2: #e8ecf5;
+  --tx: #151b2d;
+  --mu: #56627f;
+  --am: #8f5b00;
+  --tl: #0b7d75;
+  --rd: #c42b2b;
+  --ln: #d3d9e8;
+  color-scheme: light;
+}

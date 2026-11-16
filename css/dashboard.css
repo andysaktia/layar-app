@@ -1,0 +1,149 @@
+/* Dashboard Beranda: aksi cepat, statistik, target, dan rel poster. */
+.h2s {
+  font: 800 1.3rem var(--h);
+  margin: 6px 0 12px;
+}
+.fake {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--sf);
+  border: 1.5px solid var(--ln);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--mu);
+  text-align: left;
+  font-size: 1rem;
+}
+.fake svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  flex: none;
+}
+.qa {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0 22px;
+}
+.qa .btn {
+  padding: 12px 6px;
+  text-align: center;
+}
+.onb {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.onb h2 {
+  font: 800 1.3rem var(--h);
+  margin-bottom: 6px;
+}
+.onb p {
+  color: var(--mu);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.tile {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 14px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.tile p {
+  color: var(--mu);
+  font-size: 0.8rem;
+}
+.tile b {
+  display: block;
+  font: 800 1.5rem var(--h);
+  letter-spacing: -0.02em;
+}
+.tile span {
+  color: var(--mu);
+  font-size: 0.8rem;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.bar {
+  height: 10px;
+  border-radius: 99px;
+  background: var(--sf2);
+  overflow: hidden;
+  margin: 8px 0 6px;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--ac);
+  border-radius: 99px;
+}
+.rh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.rc {
+  flex: none;
+  width: 112px;
+  scroll-snap-align: start;
+}
+.rc img,
+.rc .ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: var(--sf2);
+}
+.rc .ph {
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  color: var(--mu);
+  padding: 6px;
+  text-align: center;
+}
+.rc p {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rcn {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}

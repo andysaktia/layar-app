@@ -1,0 +1,14 @@
+# Dependensi dan hasil build
+node_modules/
+dist/
+
+# Berkas sistem dan editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Lingkungan lokal (jangan pernah commit API key)
+.env
+.env.*
+*.local

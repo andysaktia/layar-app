@@ -1,0 +1,200 @@
+/* Pencarian, hasil, tab, grid kartu, tag, dan banner Mode Contoh. */
+.search {
+  position: relative;
+  margin: 8px 0 6px;
+}
+.search input {
+  width: 100%;
+  background: var(--sf);
+  border: 1.5px solid var(--ln);
+  border-radius: 14px;
+  padding: 15px 18px;
+  font-size: 1.05rem;
+}
+.search input:focus {
+  border-color: var(--am);
+  outline: none;
+}
+.hint {
+  color: var(--mu);
+  font-size: 0.88rem;
+  margin: 8px 2px 18px;
+}
+.res {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.row {
+  display: flex;
+  gap: 14px;
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 14px;
+  padding: 10px;
+  align-items: center;
+}
+.row img,
+.row .ph {
+  width: 52px;
+  height: 78px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--sf2);
+  flex: none;
+}
+.row .in {
+  flex: 1;
+  min-width: 0;
+}
+.row h3 {
+  font: 700 1rem var(--b);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row p {
+  color: var(--mu);
+  font-size: 0.86rem;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.tabs h2 {
+  font: 800 1.4rem var(--h);
+  margin-right: auto;
+}
+.tab {
+  background: none;
+  border: 1px solid var(--ln);
+  border-radius: 99px;
+  padding: 6px 14px;
+  color: var(--mu);
+}
+.tab[aria-pressed='true'] {
+  background: var(--tx);
+  color: var(--bg);
+  border-color: var(--tx);
+  font-weight: 700;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 16px;
+}
+.card {
+  position: relative;
+  background: var(--sf);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--ln);
+}
+.card img,
+.card .ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  background: var(--sf2);
+}
+.card .ph {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  text-align: center;
+  color: var(--mu);
+  font-size: 0.85rem;
+}
+.card .m {
+  padding: 9px 11px 11px;
+}
+.card h3 {
+  font: 700 0.9rem/1.3 var(--b);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card p {
+  color: var(--mu);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+.card .x {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0;
+  color: #fff;
+  background: rgba(14, 21, 35, 0.82);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.card:hover .x,
+.card .x:focus-visible {
+  opacity: 1;
+}
+@media (hover: none) {
+  .card .x {
+    opacity: 1;
+  }
+}
+.tag {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  background: rgba(14, 21, 35, 0.85);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.tag.tv {
+  color: #4fd1c5;
+}
+.tag.mv {
+  color: #f5b942;
+}
+.card.disc .m {
+  padding-bottom: 8px;
+}
+.card .go {
+  display: block;
+  width: calc(100% - 22px);
+  margin: 0 11px 11px;
+  background: var(--ac);
+  color: #1a1405;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.card .go:disabled {
+  opacity: 0.6;
+}
+[hidden] {
+  display: none !important;
+}
+.demo-bar {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--sf);
+  border: 1px dashed var(--ac);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: -10px 0 18px;
+  font-size: 0.88rem;
+}
+.wrap {
+  padding-top: calc(20px + env(safe-area-inset-top, 0px));
+}

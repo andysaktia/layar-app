@@ -1,0 +1,58 @@
+/* Ringkasan total waktu tontonan di Beranda. */
+.hero {
+  padding: 8px 0 30px;
+}
+.hero p.k {
+  color: var(--mu);
+  margin-bottom: 6px;
+}
+.big {
+  font: 800 clamp(2.6rem, 9vw, 5.6rem)/1 var(--h);
+  letter-spacing: -0.035em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1em 0.4em;
+  align-items: baseline;
+}
+.big span small {
+  font: 500 0.3em var(--b);
+  color: var(--mu);
+  letter-spacing: 0;
+  margin-left: 0.25em;
+}
+.big .n {
+  color: var(--am);
+}
+.sub {
+  margin-top: 14px;
+  color: var(--mu);
+  max-width: 60ch;
+}
+.split {
+  display: flex;
+  height: 12px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--sf);
+  margin: 26px 0 12px;
+}
+.split div {
+  transition: width 0.5s ease;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  color: var(--mu);
+  font-size: 0.92rem;
+}
+.legend b {
+  color: var(--tx);
+}
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 7px;
+}

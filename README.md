@@ -2,7 +2,7 @@
 
 > Catat film dan drama yang sudah kamu tonton, lalu lihat berapa lama waktu yang sudah kamu habiskan di depan layar seumur hidup.
 
-![Aplikasi statis](https://img.shields.io/badge/aplikasi-statis%20(tanpa%20build)-4fd1c5)
+![Aplikasi statis](<https://img.shields.io/badge/aplikasi-statis%20(tanpa%20build)-4fd1c5>)
 ![PWA](https://img.shields.io/badge/PWA-siap%20dipasang-f5b942)
 ![Tanpa backend](https://img.shields.io/badge/backend-tidak%20ada-93a0bf)
 
@@ -30,13 +30,13 @@
 
 ## Fitur
 
-| Halaman | Kegunaan |
-|---|---|
-| **Beranda** | Total waktu tontonan seumur hidup, statistik ringkas, target berikutnya, dan poster "Terakhir ditonton" |
-| **Cari** | Cari judul film dan drama, riwayat pencarian, dan tambah manual untuk judul yang tidak ditemukan |
-| **Swipe** | Geser kanan kalau sudah nonton, kiri kalau belum. Cara tercepat mengisi riwayat awal |
+| Halaman     | Kegunaan                                                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------------------------ |
+| **Beranda** | Total waktu tontonan seumur hidup, statistik ringkas, target berikutnya, dan poster "Terakhir ditonton"      |
+| **Cari**    | Cari judul film dan drama, riwayat pencarian, dan tambah manual untuk judul yang tidak ditemukan             |
+| **Swipe**   | Geser kanan kalau sudah nonton, kiri kalau belum. Cara tercepat mengisi riwayat awal                         |
 | **Jelajah** | Temukan tontonan baru. Dengan TMDB tersedia filter genre, urutan Terbaru, Populer, Rating, dan nomor halaman |
-| **Daftar** | Semua judul yang sudah dicentang, dengan filter Film dan Drama |
+| **Daftar**  | Semua judul yang sudah dicentang, dengan filter Film dan Drama                                               |
 
 Fitur lainnya:
 
@@ -53,11 +53,11 @@ Fitur lainnya:
 
 Layar memilih mode otomatis berdasarkan API key yang diisi di Pengaturan.
 
-| Mode | Syarat | Sumber data | Cocok untuk |
-|---|---|---|---|
-| **Contoh** | Tidak ada key | 24 judul dummy bawaan (tanpa internet) | Melihat-lihat fitur, demo, atau showcase |
-| **Cepat** | Key OMDb | Film dari OMDb, drama dari TVmaze | Mencentang riwayat dengan cepat |
-| **Lengkap** | Key TMDB | Jelajah dan detail dari TMDB, pencarian tetap TVmaze dan OMDb | Mencari tontonan baru dengan filter genre, Terbaru, dan halaman |
+| Mode        | Syarat        | Sumber data                                                   | Cocok untuk                                                     |
+| ----------- | ------------- | ------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Contoh**  | Tidak ada key | 24 judul dummy bawaan (tanpa internet)                        | Melihat-lihat fitur, demo, atau showcase                        |
+| **Cepat**   | Key OMDb      | Film dari OMDb, drama dari TVmaze                             | Mencentang riwayat dengan cepat                                 |
+| **Lengkap** | Key TMDB      | Jelajah dan detail dari TMDB, pencarian tetap TVmaze dan OMDb | Mencari tontonan baru dengan filter genre, Terbaru, dan halaman |
 
 Catatan:
 
@@ -67,13 +67,12 @@ Catatan:
 
 ## Mulai cepat
 
-Layar adalah situs statis tanpa langkah build.
+Layar adalah situs statis tanpa langkah build. Karena memakai ES modules, aplikasi **harus dibuka lewat server HTTP**, bukan dengan klik dua kali `index.html` (`file://`).
 
 ```bash
 git clone https://github.com/<username>/<nama-repo>.git
 cd <nama-repo>
 
-# Jalankan lewat server lokal (service worker tidak aktif jika dibuka dengan file://)
 python3 -m http.server 8080
 # atau
 npx serve .
@@ -89,13 +88,13 @@ Key bersifat opsional dan **diisi sendiri oleh tiap pengguna** di **Pengaturan**
 
 1. Buka <https://www.omdbapi.com/apikey.aspx> dan pilih **FREE**.
 2. Isi nama dan email, lalu klik link aktivasi yang dikirim ke emailmu.
-3. Tempel key di kolom *OMDb API Key*. Batas gratis: 1.000 permintaan per hari per key.
+3. Tempel key di kolom _OMDb API Key_. Batas gratis: 1.000 permintaan per hari per key.
 
 **TMDB (mode Lengkap), gratis untuk non-komersial**
 
 1. Buat akun di <https://www.themoviedb.org> dan verifikasi emailnya.
-2. Buka *Settings → API*, lalu ajukan key bertipe *Developer* (penggunaan pribadi).
-3. Tempel *API Key (v3)* atau *API Read Access Token* di kolom *TMDB API Key*.
+2. Buka _Settings → API_, lalu ajukan key bertipe _Developer_ (penggunaan pribadi).
+3. Tempel _API Key (v3)_ atau _API Read Access Token_ di kolom _TMDB API Key_.
 
 > **Jangan pernah meng-commit API key ke repo.** Layar tidak membutuhkannya di dalam kode. Kalau key terlanjur ter-commit, anggap sudah bocor dan buat key baru.
 
@@ -104,30 +103,30 @@ Key bersifat opsional dan **diisi sendiri oleh tiap pengguna** di **Pengaturan**
 **Vercel**
 
 1. Impor repo di Vercel.
-2. *Framework Preset*: **Other**. Kosongkan *Build Command* dan *Output Directory*.
+2. _Framework Preset_: **Other**. Kosongkan _Build Command_ dan _Output Directory_.
 3. Deploy.
 
 **GitHub Pages**
 
-1. Buka *Settings → Pages*.
-2. *Source*: branch `main`, folder `/ (root)`.
+1. Buka _Settings → Pages_.
+2. _Source_: branch `main`, folder `/ (root)`.
 
 Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (misalnya `username.github.io/nama-repo/`).
 
-**Memperbarui PWA:** naikkan konstanta `VERSION` di `sw.js` setiap rilis besar. Halaman utama selalu diambil dari jaringan lebih dulu, jadi pembaruan ikut masuk saat pengguna online.
+**Memperbarui PWA:** naikkan konstanta `VERSION` di `sw.js` setiap rilis. Semua berkas aplikasi diambil dari jaringan lebih dulu dan baru memakai cache saat offline, jadi pembaruan ikut masuk begitu pengguna online.
 
 ## Data dan privasi
 
 - Tidak ada server milik Layar, dan tidak ada data pengguna yang dikirim ke pihak lain selain permintaan pencarian ke API publik (TVmaze, OMDb, TMDB) langsung dari browser.
 - Data disimpan di `localStorage` browser:
 
-| Kunci | Isi |
-|---|---|
-| `layar.items` | Daftar tontonan |
-| `layar.omdb`, `layar.tmdb` | API key milik pengguna |
-| `layar.theme` | Tema terang atau gelap |
-| `layar.skip` | Judul yang digeser ke kiri di Swipe |
-| `layar.rc` | Riwayat pencarian |
+| Kunci                      | Isi                                 |
+| -------------------------- | ----------------------------------- |
+| `layar.items`              | Daftar tontonan                     |
+| `layar.omdb`, `layar.tmdb` | API key milik pengguna              |
+| `layar.theme`              | Tema terang atau gelap              |
+| `layar.skip`               | Judul yang digeser ke kiri di Swipe |
+| `layar.rc`                 | Riwayat pencarian                   |
 
 - Membersihkan data browser menghapus semuanya. Gunakan **Ekspor** di Pengaturan sebagai cadangan, dan **Impor** untuk memulihkannya.
 - Ekspor hanya berisi daftar tontonan, **tidak** menyertakan API key.
@@ -174,14 +173,60 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
 
 ```
 .
-├── index.html               # seluruh aplikasi (HTML, CSS, JS)
-├── manifest.webmanifest     # metadata PWA
-├── sw.js                    # service worker (cache shell, offline)
-├── icon-192.png
-├── icon-512.png
-├── icon-maskable-512.png
-└── README.md
+├── index.html                 # markup halaman
+├── manifest.webmanifest       # metadata PWA
+├── sw.js                      # service worker (precache dan offline)
+├── assets/icons/              # ikon PWA
+├── css/
+│   ├── variables.css          # design token dan tema gelap/terang
+│   ├── base.css               # reset, elemen dasar, header, tombol
+│   ├── hero.css               # ringkasan total waktu
+│   ├── lists.css              # pencarian, hasil, grid kartu
+│   ├── dashboard.css          # statistik dan rel poster di Beranda
+│   ├── swipe.css              # mode Swipe cepat
+│   ├── navigation.css         # navigasi bawah dan tab
+│   └── components.css         # dialog, formulir, detail, toast, footer
+└── js/
+    ├── main.js                # titik masuk: merangkai modul dan menjalankan aplikasi
+    ├── theme-init.js          # menerapkan tema sebelum halaman digambar
+    ├── core/                  # fondasi tanpa UI
+    │   ├── config.js          # konstanta
+    │   ├── state.js           # state dan penyimpanan localStorage
+    │   ├── utils.js           # helper DOM, format, toast
+    │   ├── keys.js            # penanda sumber data pada kunci judul
+    │   └── api.js             # klien TVmaze, OMDb, TMDB
+    ├── data/
+    │   └── demo.js            # data contoh (dummy) untuk Mode Contoh
+    ├── features/              # satu berkas per fitur
+    │   ├── search.js
+    │   ├── add.js
+    │   ├── explore.js
+    │   ├── detail.js
+    │   └── swipe.js
+    └── ui/                    # tampilan dan interaksi umum
+        ├── render.js          # ringkasan, daftar, beranda
+        ├── nav.js             # navigasi antarhalaman
+        ├── settings.js        # pengaturan, tema, ekspor dan impor
+        └── pwa.js             # pemasangan PWA dan service worker
 ```
+
+Aturan sederhana: `core` tidak bergantung pada `features` maupun `ui`. Tiap modul fitur dan UI mengekspor fungsi `init…()` yang memasang event handler-nya, dan semuanya dipanggil dari `main.js`.
+
+## Pengembangan
+
+Alat bantu pengembangan bersifat opsional dan tidak dibutuhkan untuk menjalankan aplikasi.
+
+```bash
+npm install
+npm start            # server lokal
+npm run lint         # ESLint
+npm run format       # rapikan kode dengan Prettier
+npm run check        # lint + cek format (dipakai CI)
+```
+
+CI di `.github/workflows/ci.yml` menjalankan lint dan cek format pada setiap push ke `main` dan pull request.
+
+**Menambah berkas JS atau CSS baru:** daftarkan juga di `SHELL` pada `sw.js` dan naikkan `VERSION`, supaya tersedia saat offline dan cache lama dibersihkan.
 
 ## Rencana pengembangan
 
@@ -199,7 +244,7 @@ Layar memakai data dari layanan berikut. Hormati syarat masing-masing, terutama 
 
 - **TVmaze** (<https://www.tvmaze.com>): data drama dan serial. Berlisensi CC BY-SA, wajib mencantumkan atribusi.
 - **OMDb API** (<https://www.omdbapi.com>): data film. Menurut ringkasan di beberapa paket pihak ketiga, konten OMDb berlisensi CC BY-NC dan untuk pemakaian non-komersial. Cek syarat terbaru di situs resminya.
-- **TMDB** (<https://www.themoviedb.org>): *This product uses the TMDB API but is not endorsed or certified by TMDB.* Gratis untuk pemakaian non-komersial. Pemakaian komersial memerlukan perjanjian tertulis dengan TMDB. Syarat TMDB juga meminta logo TMDB bila aplikasi dipublikasikan, jadi tambahkan logonya sebelum dibagikan luas.
+- **TMDB** (<https://www.themoviedb.org>): _This product uses the TMDB API but is not endorsed or certified by TMDB._ Gratis untuk pemakaian non-komersial. Pemakaian komersial memerlukan perjanjian tertulis dengan TMDB. Syarat TMDB juga meminta logo TMDB bila aplikasi dipublikasikan, jadi tambahkan logonya sebelum dibagikan luas.
 
 Poster di Mode Contoh dibuat secara lokal dan bukan karya dari film atau drama sungguhan. Semua judul, sinopsis, dan nama di data contoh adalah fiksi.
 
