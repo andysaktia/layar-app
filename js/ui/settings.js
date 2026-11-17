@@ -3,6 +3,7 @@ import { $, toast } from '../core/utils.js';
 import { addItem, save, state } from '../core/state.js';
 import { demoMode, demoSeen } from '../data/demo.js';
 import { loadGenres, resetExplore } from '../features/explore.js';
+import { refreshDataStatus } from './backup.js';
 import { refreshExplore } from './nav.js';
 import { render } from './render.js';
 import { resetDeck } from '../features/swipe.js';
@@ -26,6 +27,7 @@ export const openSet = () => {
   $('#key').value = state.omdbKey;
   $('#tkey').value = state.tmdbKey;
   updMode();
+  refreshDataStatus();
   $('#dSet').showModal();
 };
 
@@ -118,15 +120,6 @@ export function initSettings() {
     render();
     $('#dMan').close();
     toast('Ditambahkan: ' + t);
-  };
-  $('#bExp').onclick = () => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(
-      new Blob([JSON.stringify(state.items, null, 1)], { type: 'application/json' })
-    );
-    a.download = 'layar-tontonan.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
   };
   $('#bImp').onclick = () => $('#file').click();
   $('#file').onchange = async e => {

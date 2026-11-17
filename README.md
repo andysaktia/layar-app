@@ -120,16 +120,19 @@ Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (m
 - Tidak ada server milik Layar, dan tidak ada data pengguna yang dikirim ke pihak lain selain permintaan pencarian ke API publik (TVmaze, OMDb, TMDB) langsung dari browser.
 - Data disimpan di `localStorage` browser:
 
-| Kunci                      | Isi                                 |
-| -------------------------- | ----------------------------------- |
-| `layar.items`              | Daftar tontonan                     |
-| `layar.omdb`, `layar.tmdb` | API key milik pengguna              |
-| `layar.theme`              | Tema terang atau gelap              |
-| `layar.skip`               | Judul yang digeser ke kiri di Swipe |
-| `layar.rc`                 | Riwayat pencarian                   |
+| Kunci                                    | Isi                                           |
+| ---------------------------------------- | --------------------------------------------- |
+| `layar.items`                            | Daftar tontonan                               |
+| `layar.omdb`, `layar.tmdb`               | API key milik pengguna                        |
+| `layar.theme`                            | Tema terang atau gelap                        |
+| `layar.skip`                             | Judul yang digeser ke kiri di Swipe           |
+| `layar.rc`                               | Riwayat pencarian                             |
+| `layar.lastBackup`, `layar.backupSnooze` | Waktu ekspor terakhir dan penundaan pengingat |
 
 - Membersihkan data browser menghapus semuanya. Gunakan **Ekspor** di Pengaturan sebagai cadangan, dan **Impor** untuk memulihkannya.
 - Ekspor hanya berisi daftar tontonan, **tidak** menyertakan API key.
+- **Pengingat cadangan:** bila ada minimal 5 judul asli dan belum pernah diekspor (atau sudah lebih dari 30 hari), Beranda menampilkan banner pengingat. Pengguna bisa mengekspor langsung atau menundanya 7 hari.
+- **Penyimpanan permanen:** setelah ada judul yang tercatat, Layar meminta browser menjadikan penyimpanannya permanen (`navigator.storage.persist()`) agar tidak dihapus otomatis saat ruang perangkat penuh. Status dan tombol permintaannya ada di Pengaturan. Browser boleh menolak, jadi Ekspor tetap satu-satunya cadangan yang pasti.
 - Setiap entri tontonan disimpan dalam bentuk ringkas:
 
 ```json
@@ -192,6 +195,7 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
     ├── core/                  # fondasi tanpa UI
     │   ├── config.js          # konstanta
     │   ├── state.js           # state dan penyimpanan localStorage
+    │   ├── storage.js         # penyimpanan permanen dan pelacakan cadangan
     │   ├── utils.js           # helper DOM, format, toast
     │   ├── keys.js            # penanda sumber data pada kunci judul
     │   └── api.js             # klien TVmaze, OMDb, TMDB
@@ -206,6 +210,7 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
     └── ui/                    # tampilan dan interaksi umum
         ├── render.js          # ringkasan, daftar, beranda
         ├── nav.js             # navigasi antarhalaman
+        ├── backup.js          # ekspor, pengingat cadangan, status penyimpanan
         ├── settings.js        # pengaturan, tema, ekspor dan impor
         └── pwa.js             # pemasangan PWA dan service worker
 ```

@@ -86,6 +86,13 @@
       </section>
 
       <section data-view="home">
+        <div class="demo-bar" id="backupBar" hidden style="margin-top: 0">
+          <span><b>Waktunya cadangan.</b> <span id="backupMsg"></span></span>
+          <span class="bar-acts"
+            ><button class="btn sm pri" id="backupNow">Ekspor sekarang</button
+            ><button class="btn sm" id="backupLater">Nanti</button></span
+          >
+        </div>
         <button class="fake" id="goSearch" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="11" cy="11" r="7" />
@@ -259,8 +266,10 @@
           Daftar tontonan hanya tersimpan di browser ini. Simpan cadangan sebelum membersihkan data
           browser.
         </p>
+        <p class="note" id="stStatus" style="margin-top: 8px"></p>
         <div class="acts" style="justify-content: flex-start; margin-top: 10px">
-          <button class="btn sm" id="bExp">Ekspor</button
+          <button class="btn sm pri" id="bPersist" hidden>Minta penyimpanan permanen</button
+          ><button class="btn sm" id="bExp">Ekspor</button
           ><button class="btn sm" id="bImp">Impor</button>
         </div>
       </div>

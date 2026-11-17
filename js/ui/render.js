@@ -2,6 +2,7 @@
 import { $, W, esc, fmtM, nf, toast } from '../core/utils.js';
 import { dAttr } from '../core/keys.js';
 import { save, state } from '../core/state.js';
+import { updBackupBar } from './backup.js';
 
 let filter = 'all';
 
@@ -19,6 +20,7 @@ export function render() {
     tm = tv.reduce((a, i) => a + i.minutes, 0);
   const eps = tv.reduce((a, i) => a + (i.eps || 0), 0);
   renderHome();
+  updBackupBar();
   $('#libTot').textContent = tot
     ? `Total ${nf(d)} hari ${h} jam ${m} menit · ${nf(state.items.length)} judul`
     : '';

@@ -1,5 +1,6 @@
 /** State aplikasi dan penyimpanan di localStorage. */
 import { toast } from './utils.js';
+import { maybePersist } from './storage.js';
 
 export const state = { items: [], omdbKey: '', tmdbKey: '' };
 
@@ -12,6 +13,7 @@ try {
 export const save = () => {
   try {
     localStorage.setItem('layar.items', JSON.stringify(state.items));
+    maybePersist(state.items.filter(i => !i.demo).length);
   } catch (e) {
     toast('Gagal menyimpan di browser');
   }
