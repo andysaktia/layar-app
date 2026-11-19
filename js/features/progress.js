@@ -8,16 +8,30 @@ import { done_ } from './add.js';
 import { search } from './search.js';
 import { loadTvStructure } from './tvdata.js';
 
+/** Season dengan lebih dari ini episode mendapat tombol +/− agar bisa diatur teliti. */
+const LONG_SEASON = 24;
+
 /** Data dialog yang sedang terbuka: { mode: 'add' | 'edit', s, id, key, title, year, poster, seasons, watched } */
 let ed = null;
 
 const seasonOf = n => ed.seasons.find(x => x.n === n);
 
+/** Tandai ada perubahan yang belum disimpan, agar ketukan di luar dialog tidak membuangnya. */
+const markDirty = () => {
+  $('#dTv').dataset.dirty = '1';
+};
+
 function paintRow(n) {
   const row = $(`#seas .sr[data-n="${n}"]`);
+  const total = seasonOf(n).r.length;
   const k = ed.watched[n] || 0;
-  row.querySelector('.sr-c').textContent = `${k} / ${seasonOf(n).r.length}`;
+  const full = k === total;
+  row.querySelector('.sr-c').textContent = `${k}/${total}`;
   row.querySelector('input').value = k;
+  row.classList.toggle('full', full);
+  const toggle = row.querySelector('.sr-t');
+  toggle.setAttribute('aria-pressed', String(full));
+  toggle.setAttribute('aria-label', `Season ${n}: ${full ? 'kosongkan' : 'tandai semua ditonton'}`);
 }
 
 function paintSummary() {
@@ -32,41 +46,47 @@ function paintSummary() {
 
 function paintSeasons() {
   $('#seas').innerHTML = ed.seasons
-    .map(
-      s => `<div class="sr" data-n="${s.n}">
-        <div class="sr-h"><b>Season ${s.n}</b><span class="sr-c"></span></div>
-        <div class="sr-r">
-          <button type="button" class="btn sm sr-m" aria-label="Kurangi satu episode">−</button>
-          <input type="range" min="0" max="${s.r.length}" value="${ed.watched[s.n] || 0}"
-            aria-label="Episode ditonton Season ${s.n}" />
-          <button type="button" class="btn sm sr-p" aria-label="Tambah satu episode">+</button>
-          <button type="button" class="btn sm sr-a">Semua</button>
-        </div>
-      </div>`
-    )
+    .map(s => {
+      const long = s.r.length > LONG_SEASON;
+      return `<div class="sr${long ? ' long' : ''}" data-n="${s.n}">
+        <b class="sr-n">Season ${s.n}</b>
+        <input type="range" min="0" max="${s.r.length}" value="${ed.watched[s.n] || 0}"
+          aria-label="Episode ditonton Season ${s.n}" />
+        <span class="sr-c"></span>
+        <button type="button" class="sr-t" aria-pressed="false">✓</button>
+        ${
+          long
+            ? `<div class="sr-adj">
+                 <button type="button" class="btn sm sr-m" aria-label="Kurangi satu episode">−1</button>
+                 <button type="button" class="btn sm sr-p" aria-label="Tambah satu episode">+1</button>
+               </div>`
+            : ''
+        }
+      </div>`;
+    })
     .join('');
   ed.seasons.forEach(s => paintRow(s.n));
 }
 
 function setWatched(n, k) {
   ed.watched[n] = Math.max(0, Math.min(seasonOf(n).r.length, k));
+  markDirty();
   paintRow(n);
   paintSummary();
 }
 
 function open(next) {
   ed = next;
+  delete $('#dTv').dataset.dirty;
   $('#tvT').textContent = ed.title;
-  $('#tvHint').textContent =
-    ed.mode === 'add'
-      ? 'Atur episode yang sudah kamu tonton di tiap season.'
-      : ed.legacy
-        ? 'Data lama: ini perkiraan progres. Cek dan sesuaikan, lalu simpan.'
-        : 'Perbarui episode yang sudah kamu tonton.';
+  $('#tvHint').textContent = ed.legacy
+    ? 'Data lama: perkiraan progres. Cek lalu simpan.'
+    : 'Geser untuk mengatur episode yang sudah ditonton.';
   $('#tvOk').textContent = ed.mode === 'add' ? 'Tandai ditonton' : 'Simpan progres';
   $('#tvSync').hidden = ed.mode !== 'edit';
   paintSeasons();
   paintSummary();
+  $('#seas').scrollTop = 0;
   $('#dTv').showModal();
 }
 
@@ -147,6 +167,7 @@ async function syncEpisodes() {
     const before = totalEps(ed.seasons);
     ed.seasons = st.seasons;
     ed.watched = mergeWatched(ed.watched, st.seasons);
+    markDirty();
     paintSeasons();
     paintSummary();
     const added = totalEps(st.seasons) - before;
@@ -167,17 +188,20 @@ export function initProgress() {
     const row = e.target.closest('.sr');
     if (!row) return;
     const n = +row.dataset.n;
-    if (e.target.closest('.sr-m')) setWatched(n, (ed.watched[n] || 0) - 1);
+    const total = seasonOf(n).r.length;
+    if (e.target.closest('.sr-t')) setWatched(n, (ed.watched[n] || 0) === total ? 0 : total);
+    else if (e.target.closest('.sr-m')) setWatched(n, (ed.watched[n] || 0) - 1);
     else if (e.target.closest('.sr-p')) setWatched(n, (ed.watched[n] || 0) + 1);
-    else if (e.target.closest('.sr-a')) setWatched(n, seasonOf(n).r.length);
   });
   $('#tvAll').onclick = () => {
     ed.watched = allWatched(ed.seasons);
+    markDirty();
     paintSeasons();
     paintSummary();
   };
   $('#tvNone').onclick = () => {
     ed.watched = Object.fromEntries(ed.seasons.map(s => [s.n, 0]));
+    markDirty();
     paintSeasons();
     paintSummary();
   };

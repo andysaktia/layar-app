@@ -163,7 +163,8 @@ export function initDetail() {
   };
   document.querySelectorAll('dialog').forEach(d =>
     d.addEventListener('click', e => {
-      if (e.target === d) d.close();
+      // Ketukan di luar tidak membuang perubahan yang belum disimpan (dialog progres).
+      if (e.target === d && d.dataset.dirty !== '1') d.close();
     })
   );
 }

@@ -1,59 +1,191 @@
-/* Progres drama: dialog episode per season dan kartu di Daftar. */
-.tv-sum {
-  margin: 6px 0 12px;
+/* Progres drama: lembar (bottom sheet di HP) untuk mengatur episode, dan kartu progres di Daftar. */
+
+/* ---------- lembar progres ---------- */
+#dTv {
+  padding: 0;
+  overflow: hidden;
+  max-height: min(88vh, 680px);
 }
-.tv-sum-h {
+@supports (height: 1dvh) {
+  #dTv {
+    max-height: min(88dvh, 680px);
+  }
+}
+#dTv[open] {
+  display: flex;
+  flex-direction: column;
+  animation: sheet-in 0.2s ease-out;
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #dTv[open] {
+    animation: none;
+  }
+}
+.sheet-h {
+  flex: none;
+  padding: 14px 18px 10px;
+}
+.grip {
+  display: none;
+  width: 40px;
+  height: 4px;
+  margin: -4px auto 10px;
+  border-radius: 2px;
+  background: var(--ln);
+}
+#dTv h2 {
+  margin-bottom: 2px;
+  font-size: 1.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#tvHint {
+  font-size: 0.82rem;
+}
+.tv-sum {
   display: flex;
   align-items: baseline;
   gap: 10px;
+  margin-top: 8px;
 }
-.tv-sum-h b {
-  font: 800 1.9rem var(--h);
+.tv-sum b {
+  font: 800 1.7rem var(--h);
   letter-spacing: -0.02em;
   color: var(--am);
 }
-.tv-sum-h span {
+.tv-sum span {
   color: var(--mu);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
 }
-.tv-quick {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
+.sheet-h .bar {
+  height: 8px;
+  margin: 6px 0 10px;
 }
 .bar i {
   transition: width 0.2s;
 }
-.sr {
-  background: var(--bg);
-  border-radius: 12px;
-  padding: 10px 12px;
-}
-.sr-h {
+.tv-quick {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 0.92rem;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.tv-quick .btn {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* daftar season: satu area gulir, header dan tombol simpan selalu terlihat */
+#dTv .seasons {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  padding: 4px 18px 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  gap: 6px;
+}
+.sr {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr 3rem auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 6px 8px 6px 12px;
+  background: var(--bg);
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+.sr.full {
+  border-color: var(--ln);
+}
+.sr-n {
+  font-size: 0.88rem;
+}
+.sr input[type='range'] {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  margin: 0;
+  accent-color: var(--ac);
 }
 .sr-c {
   color: var(--mu);
+  font-size: 0.85rem;
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
-.sr-r {
+.sr-t {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1.5px solid var(--ln);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mu);
+  font-size: 1.05rem;
+}
+.sr-t[aria-pressed='true'] {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #1a1405;
+  font-weight: 800;
+}
+.sr-adj {
+  grid-column: 1 / -1;
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
   gap: 8px;
 }
-.sr-r input[type='range'] {
-  flex: 1;
-  min-width: 0;
-  height: 28px;
-  accent-color: var(--ac);
+.sheet-f {
+  flex: none;
+  padding: 10px 18px calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--ln);
+  background: var(--sf);
 }
-.sr-r .btn {
-  min-width: 40px;
+.sheet-f .note {
+  margin-bottom: 8px;
+  font-size: 0.82rem;
 }
+.sheet-f .acts {
+  margin-top: 0;
+}
+
+/* di HP: lembar menempel di bawah layar */
+@media (max-width: 759px) {
+  #dTv {
+    margin: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    max-height: min(86vh, 640px);
+  }
+  @supports (height: 1dvh) {
+    #dTv {
+      max-height: min(86dvh, 640px);
+    }
+  }
+  .grip {
+    display: block;
+  }
+  .sr {
+    grid-template-columns: 4.2rem 1fr 2.8rem auto;
+    gap: 6px;
+  }
+}
+
+/* ---------- kartu progres di Daftar ---------- */
 .prog {
   margin-top: 8px;
 }
