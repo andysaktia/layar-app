@@ -3,7 +3,7 @@
  * - File milik sendiri: jaringan dulu (selalu terbaru), cache sebagai cadangan offline.
  * - API (TVmaze, OMDb, TMDB), poster, dan font tidak dicegat.
  * Naikkan VERSION setiap rilis agar cache lama dibersihkan. */
-const VERSION = 'layar-v3';
+const VERSION = 'layar-v4';
 
 const SHELL = [
   './',
@@ -37,6 +37,7 @@ const SHELL = [
   'js/ui/nav.js',
   'js/ui/backup.js',
   'js/ui/settings.js',
+  'js/ui/undo.js',
   'js/ui/pwa.js',
 ];
 

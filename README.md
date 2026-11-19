@@ -211,6 +211,7 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
         ├── render.js          # ringkasan, daftar, beranda
         ├── nav.js             # navigasi antarhalaman
         ├── backup.js          # ekspor, pengingat cadangan, status penyimpanan
+        ├── undo.js            # hapus dengan pembatalan (snackbar hitung mundur)
         ├── settings.js        # pengaturan, tema, ekspor dan impor
         └── pwa.js             # pemasangan PWA dan service worker
 ```

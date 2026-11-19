@@ -221,6 +221,54 @@ dialog select {
 .toast.on {
   opacity: 1;
 }
+.undo {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 30;
+  width: min(440px, calc(100vw - 24px));
+  background: var(--sf2);
+  color: var(--tx);
+  border: 1px solid var(--ln);
+  border-radius: 14px;
+  padding: 10px 12px 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.undo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.undo-row span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.undo-btn {
+  background: none;
+  border: 0;
+  color: var(--am);
+  font-weight: 800;
+  padding: 8px 6px;
+  min-height: 40px;
+  font-variant-numeric: tabular-nums;
+}
+.undo-fill {
+  height: 3px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: var(--ac);
+  width: 100%;
+}
+@media (min-width: 760px) {
+  .undo {
+    bottom: 22px;
+  }
+}
 footer {
   margin-top: 44px;
   color: var(--mu);

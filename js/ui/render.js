@@ -1,8 +1,9 @@
 /** Render ringkasan, daftar tontonan, dan beranda. */
-import { $, W, esc, fmtM, nf, toast } from '../core/utils.js';
+import { $, W, esc, fmtM, nf } from '../core/utils.js';
 import { dAttr } from '../core/keys.js';
-import { save, state } from '../core/state.js';
+import { state } from '../core/state.js';
 import { updBackupBar } from './backup.js';
+import { removeWithUndo } from './undo.js';
 
 let filter = 'all';
 
@@ -93,12 +94,7 @@ function renderHome() {
 export function initRender() {
   $('#grid').onclick = e => {
     const b = e.target.closest('.x');
-    if (!b) return;
-    const it = state.items.find(i => i.key === b.dataset.k);
-    state.items = state.items.filter(i => i.key !== b.dataset.k);
-    save();
-    render();
-    toast('Dihapus: ' + (it ? it.title : ''));
+    if (b) removeWithUndo(b.dataset.k);
   };
   document.querySelectorAll('.tab[data-f]').forEach(
     t =>

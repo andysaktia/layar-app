@@ -377,6 +377,13 @@
       </div>
     </dialog>
     <input type="file" id="file" accept="application/json" hidden />
+    <div class="undo" id="undoBar" role="status" aria-live="polite" hidden>
+      <div class="undo-row">
+        <span id="undoMsg"></span>
+        <button class="undo-btn" id="undoBtn" type="button">Batalkan</button>
+      </div>
+      <div class="undo-fill" id="undoFill"></div>
+    </div>
     <div class="toast" id="toast" role="status"></div>
 
     <script type="module" src="js/main.js"></script>
