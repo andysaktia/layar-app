@@ -120,18 +120,18 @@ Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (m
 - Tidak ada server milik Layar, dan tidak ada data pengguna yang dikirim ke pihak lain selain permintaan pencarian ke API publik (TVmaze, OMDb, TMDB) langsung dari browser.
 - Data disimpan di `localStorage` browser:
 
-| Kunci                                    | Isi                                           |
-| ---------------------------------------- | --------------------------------------------- |
-| `layar.items`                            | Daftar tontonan                               |
-| `layar.omdb`, `layar.tmdb`               | API key milik pengguna                        |
-| `layar.theme`                            | Tema terang atau gelap                        |
-| `layar.skip`                             | Judul yang digeser ke kiri di Swipe           |
-| `layar.rc`                               | Riwayat pencarian                             |
-| `layar.lastBackup`, `layar.backupSnooze` | Waktu ekspor terakhir dan penundaan pengingat |
+| Kunci                                                         | Isi                                           |
+| ------------------------------------------------------------- | --------------------------------------------- |
+| `layar.items`                                                 | Daftar tontonan                               |
+| `layar.omdb`, `layar.tmdb`                                    | API key milik pengguna                        |
+| `layar.theme`                                                 | Tema terang atau gelap                        |
+| `layar.skip`                                                  | Judul yang digeser ke kiri di Swipe           |
+| `layar.rc`                                                    | Riwayat pencarian                             |
+| `layar.lastBackup`, `layar.backupCount`, `layar.backupSnooze` | Waktu ekspor terakhir dan penundaan pengingat |
 
 - Membersihkan data browser menghapus semuanya. Gunakan **Ekspor** di Pengaturan sebagai cadangan, dan **Impor** untuk memulihkannya.
 - Ekspor hanya berisi daftar tontonan, **tidak** menyertakan API key.
-- **Pengingat cadangan:** bila ada minimal 5 judul asli dan belum pernah diekspor (atau sudah lebih dari 30 hari), Beranda menampilkan banner pengingat. Pengguna bisa mengekspor langsung atau menundanya 7 hari.
+- **Pengingat cadangan:** bila ada minimal 5 judul asli, Beranda menampilkan banner pengingat saat belum pernah ekspor, sudah lebih dari 30 hari sejak ekspor terakhir, atau sudah ada 10 judul baru sejak ekspor terakhir. Pengguna bisa mengekspor, membagikan lewat menu bagikan sistem (Drive, email, WhatsApp; bila didukung browser), atau menundanya 7 hari.
 - **Penyimpanan permanen:** setelah ada judul yang tercatat, Layar meminta browser menjadikan penyimpanannya permanen (`navigator.storage.persist()`) agar tidak dihapus otomatis saat ruang perangkat penuh. Status dan tombol permintaannya ada di Pengaturan. Browser boleh menolak, jadi Ekspor tetap satu-satunya cadangan yang pasti.
 - Setiap entri tontonan disimpan dalam bentuk ringkas:
 
