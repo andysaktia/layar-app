@@ -41,7 +41,7 @@
 Fitur lainnya:
 
 - **Modal detail**: judul, sinopsis, tahun, durasi, rating, genre, sutradara dan pemeran.
-- **Hitung durasi drama per season**, jadi pengguna bisa memilih season yang sudah ditonton. Durasi dijumlah dari tiap episode.
+- **Progres drama per episode**: tiap season punya penggeser dan tombol +/−, dengan persen progres dan total menit yang langsung dihitung dari durasi tiap episode. Bisa dipakai saat menambah drama maupun memperbarui dari halaman Daftar (tombol **Perbarui**, bar progres, filter **Belum tamat**, dan **Cek episode baru** untuk serial yang masih tayang).
 - **Tema gelap dan terang** (gelap sebagai bawaan).
 - **PWA**: bisa dipasang ke layar utama, dan beranda, total, serta daftar bisa dibuka offline.
 - **Ekspor dan impor JSON** untuk cadangan.
@@ -148,6 +148,22 @@ Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (m
 }
 ```
 
+Entri drama menyimpan rincian episode agar progresnya bisa diperbarui:
+
+```json
+{
+  "key": "tmdb-tv-1396",
+  "type": "tv",
+  "title": "Judul Drama",
+  "minutes": 675,
+  "eps": 15,
+  "seasons": [{ "n": 1, "r": [45, 45, 44] }],
+  "watched": { "1": 2 }
+}
+```
+
+`seasons[].r` berisi durasi (menit) tiap episode, dan `watched` berisi jumlah episode yang sudah ditonton per season (dihitung berurutan dari episode pertama). Entri drama lama tanpa rincian ini ditampilkan dengan tombol **Atur progres**; saat dibuka, progresnya diperkirakan dari jumlah episode yang tercatat lalu disimpan lengkap.
+
 ## Arsitektur
 
 **Layer:** Consumer
@@ -188,7 +204,8 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
 │   ├── dashboard.css          # statistik dan rel poster di Beranda
 │   ├── swipe.css              # mode Swipe cepat
 │   ├── navigation.css         # navigasi bawah dan tab
-│   └── components.css         # dialog, formulir, detail, toast, footer
+│   ├── components.css         # dialog, formulir, detail, toast, footer
+│   └── progress.css           # dialog progres drama dan kartu progres di Daftar
 └── js/
     ├── main.js                # titik masuk: merangkai modul dan menjalankan aplikasi
     ├── theme-init.js          # menerapkan tema sebelum halaman digambar
@@ -198,6 +215,7 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
     │   ├── storage.js         # penyimpanan permanen dan pelacakan cadangan
     │   ├── utils.js           # helper DOM, format, toast
     │   ├── keys.js            # penanda sumber data pada kunci judul
+    │   ├── tv.js              # hitung progres drama (episode, menit, persen)
     │   └── api.js             # klien TVmaze, OMDb, TMDB
     ├── data/
     │   └── demo.js            # data contoh (dummy) untuk Mode Contoh
@@ -206,6 +224,8 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
     │   ├── add.js
     │   ├── explore.js
     │   ├── detail.js
+    │   ├── progress.js        # dialog progres drama (tambah dan perbarui)
+    │   ├── tvdata.js          # memuat struktur episode drama dari API
     │   └── swipe.js
     └── ui/                    # tampilan dan interaksi umum
         ├── render.js          # ringkasan, daftar, beranda

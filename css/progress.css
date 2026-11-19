@@ -1,0 +1,85 @@
+/* Progres drama: dialog episode per season dan kartu di Daftar. */
+.tv-sum {
+  margin: 6px 0 12px;
+}
+.tv-sum-h {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.tv-sum-h b {
+  font: 800 1.9rem var(--h);
+  letter-spacing: -0.02em;
+  color: var(--am);
+}
+.tv-sum-h span {
+  color: var(--mu);
+  font-size: 0.88rem;
+}
+.tv-quick {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.bar i {
+  transition: width 0.2s;
+}
+.sr {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.sr-h {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.92rem;
+}
+.sr-c {
+  color: var(--mu);
+  font-variant-numeric: tabular-nums;
+}
+.sr-r {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sr-r input[type='range'] {
+  flex: 1;
+  min-width: 0;
+  height: 28px;
+  accent-color: var(--ac);
+}
+.sr-r .btn {
+  min-width: 40px;
+}
+.prog {
+  margin-top: 8px;
+}
+.prog .bar {
+  height: 6px;
+  margin: 0 0 4px;
+}
+.prog span {
+  font-size: 0.78rem;
+  color: var(--mu);
+}
+.card .upd {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 9px;
+  border: 1px solid var(--ln);
+  background: var(--sf2);
+  color: var(--tx);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.card .upd:hover {
+  border-color: var(--am);
+}
+.card .upd:disabled {
+  opacity: 0.6;
+}

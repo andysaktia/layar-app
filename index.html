@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="css/swipe.css" />
     <link rel="stylesheet" href="css/navigation.css" />
     <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/progress.css" />
   </head>
   <body>
     <div class="wrap">
@@ -210,6 +211,7 @@
           <button class="tab" data-f="all" aria-pressed="true">Semua</button>
           <button class="tab" data-f="movie" aria-pressed="false">Film</button>
           <button class="tab" data-f="tv" aria-pressed="false">Drama / Serial</button>
+          <button class="tab" data-f="ongoing" aria-pressed="false">Belum tamat</button>
         </div>
         <p class="note" id="libTot" style="margin: -4px 0 14px"></p>
         <div class="grid" id="grid"></div>
@@ -336,14 +338,25 @@
       </div>
     </dialog>
 
-    <dialog id="dTv">
+    <dialog id="dTv" aria-labelledby="tvT">
       <h2 id="tvT"></h2>
-      <p class="note">Pilih season yang sudah kamu tonton.</p>
+      <p class="note" id="tvHint"></p>
+      <div class="tv-sum">
+        <div class="tv-sum-h"><b id="tvPct">0%</b><span id="tvSum"></span></div>
+        <div class="bar"><i id="tvBar"></i></div>
+      </div>
+      <div class="tv-quick">
+        <button class="btn sm" id="tvAll" type="button">Tandai semua</button>
+        <button class="btn sm" id="tvNone" type="button">Kosongkan</button>
+        <button class="btn sm" id="tvSync" type="button" hidden>Cek episode baru</button>
+      </div>
       <div class="seasons" id="seas"></div>
-      <p class="note" id="tvSum"></p>
+      <p class="note" id="tvZero" hidden>
+        Atur minimal satu episode. Untuk membuang judul ini, hapus dari daftar.
+      </p>
       <div class="acts">
-        <button class="btn" id="tvX">Batal</button
-        ><button class="btn pri" id="tvOk">Tandai ditonton</button>
+        <button class="btn" id="tvX" type="button">Batal</button
+        ><button class="btn pri" id="tvOk" type="button">Tandai ditonton</button>
       </div>
     </dialog>
 

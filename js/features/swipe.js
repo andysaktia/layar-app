@@ -4,11 +4,13 @@ import { DEMO, demoCard, demoMode } from '../data/demo.js';
 import { IMG } from '../core/config.js';
 import { K } from '../core/keys.js';
 import { addItem, save, state } from '../core/state.js';
-import { addMovie, openTv } from './add.js';
+import { addMovie } from './add.js';
 import { openDetail } from './detail.js';
 import { randMv, randTv } from './explore.js';
 import { render } from '../ui/render.js';
 import { tmdb } from '../core/api.js';
+import { allWatched, tally } from '../core/tv.js';
+import { loadTvStructure } from './tvdata.js';
 
 export let deckArr = [],
   filling = false,
@@ -148,16 +150,19 @@ function decide(dir) {
 }
 
 async function addTvAll(s, id) {
-  const p = await openTv(s, id, true),
-    r = await p.calc(p.seasons.map(x => x.n));
+  const st = await loadTvStructure(s, id);
+  const watched = allWatched(st.seasons);
+  const { min, eps } = tally(st.seasons, watched);
   addItem({
-    key: p.key,
+    key: K(s, 'tv', id),
     type: 'tv',
-    title: p.title,
-    year: p.year,
-    poster: p.poster,
-    minutes: r.min,
-    eps: r.eps,
+    title: st.title,
+    year: st.year,
+    poster: st.poster,
+    minutes: min,
+    eps,
+    seasons: st.seasons,
+    watched,
   });
   save();
   render();

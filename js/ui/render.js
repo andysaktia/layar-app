@@ -1,7 +1,9 @@
 /** Render ringkasan, daftar tontonan, dan beranda. */
-import { $, W, esc, fmtM, nf } from '../core/utils.js';
+import { $, W, esc, fmtM, nf, toast } from '../core/utils.js';
 import { dAttr } from '../core/keys.js';
 import { state } from '../core/state.js';
+import { pctOf, totalEps } from '../core/tv.js';
+import { openTvEdit } from '../features/progress.js';
 import { updBackupBar } from './backup.js';
 import { removeWithUndo } from './undo.js';
 
@@ -34,7 +36,13 @@ export function render() {
   $('#legend').innerHTML =
     `<span><i class="dot" style="background:var(--am)"></i><b>${nf(mv.length)}</b> film · ${nf(Math.round(mm / 60))} jam</span>
   <span><i class="dot" style="background:var(--tl)"></i><b>${nf(tv.length)}</b> drama/serial${eps ? ' · ' + nf(eps) + ' episode' : ''} · ${nf(Math.round(tm / 60))} jam</span>`;
-  const list = state.items.filter(i => filter === 'all' || i.type === filter);
+  const list = state.items.filter(i =>
+    filter === 'all'
+      ? true
+      : filter === 'ongoing'
+        ? i.type === 'tv' && !!i.seasons && pctOf(i.eps, i.seasons) < 100
+        : i.type === filter
+  );
   $('#grid').innerHTML = list.length
     ? list
         .map(
@@ -42,10 +50,20 @@ export function render() {
     ${W(dAttr(i.key), i.poster ? `<img loading="lazy" src="${esc(i.poster)}" alt="">` : `<div class="ph">${esc(i.title)}</div>`, i.title)}
     <span class="tag ${i.type === 'tv' ? 'tv' : 'mv'}">${i.type === 'tv' ? 'Drama' : 'Film'}</span>
     <button class="x" data-k="${esc(i.key)}" aria-label="Hapus ${esc(i.title)}">✕</button>
-    <div class="m"><h3>${dAttr(i.key) ? `<button class="ttl" data-d="${dAttr(i.key)}">${esc(i.title)}</button>` : esc(i.title)}</h3><p>${i.year || ''}${i.year ? ' · ' : ''}${i.minutes >= 60 ? Math.floor(i.minutes / 60) + ' j ' + (i.minutes % 60) + ' m' : i.minutes + ' m'}</p></div></article>`
+    <div class="m"><h3>${dAttr(i.key) ? `<button class="ttl" data-d="${dAttr(i.key)}">${esc(i.title)}</button>` : esc(i.title)}</h3><p>${i.year || ''}${i.year ? ' · ' : ''}${i.minutes >= 60 ? Math.floor(i.minutes / 60) + ' j ' + (i.minutes % 60) + ' m' : i.minutes + ' m'}</p>${progressBlock(i)}</div></article>`
         )
         .join('')
     : `<div class="empty" style="grid-column:1/-1">${state.items.length ? 'Belum ada di kategori ini.' : 'Belum ada tontonan. Mulai dengan mencari satu judul favoritmu.'}</div>`;
+}
+
+/** Progres drama di kartu Daftar, dan tombol untuk memperbarui. */
+function progressBlock(i) {
+  if (i.type !== 'tv' || !dAttr(i.key)) return '';
+  const key = esc(i.key);
+  if (!i.seasons) return `<button class="upd" data-upd="${key}">Atur progres</button>`;
+  const pct = pctOf(i.eps, i.seasons);
+  const label = pct >= 100 ? '✓ Selesai' : `${i.eps}/${totalEps(i.seasons)} eps · ${pct}%`;
+  return `<div class="prog"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Progres ${esc(i.title)}"><i style="width:${pct}%"></i></div><span>${label}</span></div><button class="upd" data-upd="${key}">Perbarui</button>`;
 }
 
 function renderHome() {
@@ -93,8 +111,22 @@ function renderHome() {
 
 export function initRender() {
   $('#grid').onclick = e => {
-    const b = e.target.closest('.x');
-    if (b) removeWithUndo(b.dataset.k);
+    const x = e.target.closest('.x');
+    if (x) {
+      removeWithUndo(x.dataset.k);
+      return;
+    }
+    const u = e.target.closest('.upd');
+    if (!u) return;
+    const label = u.textContent;
+    u.disabled = true;
+    u.textContent = '…';
+    openTvEdit(u.dataset.upd)
+      .catch(err => toast(err.message))
+      .finally(() => {
+        u.disabled = false;
+        u.textContent = label;
+      });
   };
   document.querySelectorAll('.tab[data-f]').forEach(
     t =>
