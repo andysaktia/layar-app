@@ -292,8 +292,10 @@
           dibuka offline. iPhone: tombol Bagikan → Tambah ke Layar Utama.
         </p>
         <div class="acts" style="justify-content: flex-start; margin-top: 10px">
-          <button class="btn sm pri" id="bInst" hidden>Pasang aplikasi</button>
+          <button class="btn sm pri" id="bInst" hidden>Pasang aplikasi</button
+          ><button class="btn sm" id="bUpd" type="button">Periksa pembaruan</button>
         </div>
+        <p class="note" id="appVer" style="margin-top: 8px"></p>
       </div>
       <p class="note">
         Mode Lengkap aktif otomatis bila kolom TMDB terisi. Kosongkan untuk kembali ke mode Cepat.
@@ -395,6 +397,12 @@
         <button class="undo-btn" id="undoBtn" type="button">Batalkan</button>
       </div>
       <div class="undo-fill" id="undoFill"></div>
+    </div>
+    <div class="undo" id="updBar" role="status" aria-live="polite" hidden>
+      <div class="undo-row">
+        <span>Versi baru tersedia</span>
+        <button class="undo-btn" id="updBtn" type="button">Muat ulang</button>
+      </div>
     </div>
     <div class="toast" id="toast" role="status"></div>
 

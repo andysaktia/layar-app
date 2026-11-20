@@ -1,9 +1,11 @@
 /* Layar service worker.
  * - Precache: kerangka aplikasi (HTML, CSS, JS, ikon) agar bisa dibuka offline.
- * - File milik sendiri: jaringan dulu (selalu terbaru), cache sebagai cadangan offline.
+ * - File milik sendiri: jaringan dulu dengan validasi ulang ke server (ETag, tidak memakai
+ *   cache HTTP yang basi), cache service worker hanya sebagai cadangan offline.
  * - API (TVmaze, OMDb, TMDB), poster, dan font tidak dicegat.
- * Naikkan VERSION setiap rilis agar cache lama dibersihkan. */
-const VERSION = 'layar-v5';
+ * Versi diambil dari alamat pendaftaran (`sw.js?v=...`) yang diisi APP_VERSION di js/core/config.js,
+ * jadi cukup menaikkan satu angka itu setiap rilis. */
+const VERSION = 'layar-v' + (new URL(self.location.href).searchParams.get('v') || '0');
 
 const SHELL = [
   './',
@@ -49,7 +51,12 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches
       .open(VERSION)
-      .then(cache => cache.addAll(SHELL))
+      // cache: 'reload' melewati cache HTTP supaya yang tersimpan adalah berkas terbaru dari server.
+      .then(cache =>
+        cache.addAll(
+          SHELL.map(u => new Request(new URL(u, self.location.href).href, { cache: 'reload' }))
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });
@@ -69,7 +76,8 @@ self.addEventListener('fetch', event => {
   if (new URL(req.url).origin !== self.location.origin) return;
 
   event.respondWith(
-    fetch(req)
+    // no-cache: selalu validasi ke server (304 bila tidak berubah), bukan memakai salinan HTTP basi.
+    fetch(req, { cache: 'no-cache' })
       .then(res => {
         if (res.ok) {
           const copy = res.clone();

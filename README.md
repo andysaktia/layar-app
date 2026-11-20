@@ -115,7 +115,7 @@ Key bersifat opsional dan **diisi sendiri oleh tiap pengguna** di **Pengaturan**
 
 Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (misalnya `username.github.io/nama-repo/`).
 
-**Memperbarui PWA:** naikkan konstanta `VERSION` di `sw.js` setiap rilis. Semua berkas aplikasi diambil dari jaringan lebih dulu dan baru memakai cache saat offline, jadi pembaruan ikut masuk begitu pengguna online.
+**Memperbarui PWA:** naikkan `APP_VERSION` di `js/core/config.js` setiap rilis (otomatis dipakai sebagai versi cache `sw.js` dan ditampilkan di Pengaturan). Berkas aplikasi selalu divalidasi ke server saat dibuka, jadi pembaruan tidak tertahan cache HTTP hosting. Saat versi baru terpasang, muncul panel **Versi baru tersedia** dengan tombol **Muat ulang**, dan Pengaturan punya tombol **Periksa pembaruan**.
 
 ## Data dan privasi
 
@@ -255,7 +255,7 @@ npm run check        # lint + cek format (dipakai CI)
 
 CI di `.github/workflows/ci.yml` menjalankan lint dan cek format pada setiap push ke `main` dan pull request.
 
-**Menambah berkas JS atau CSS baru:** daftarkan juga di `SHELL` pada `sw.js` dan naikkan `VERSION`, supaya tersedia saat offline dan cache lama dibersihkan.
+**Menambah berkas JS atau CSS baru:** daftarkan juga di `SHELL` pada `sw.js` dan naikkan `APP_VERSION` di `js/core/config.js`, supaya tersedia saat offline dan cache lama dibersihkan.
 
 ## Rencana pengembangan
 

@@ -1,4 +1,11 @@
 /** Konstanta aplikasi. */
+
+/**
+ * Versi aplikasi. Naikkan setiap rilis: dipakai sebagai nomor versi di Pengaturan
+ * dan sebagai nama cache service worker (lewat `sw.js?v=...`).
+ */
+export const APP_VERSION = '6';
+
 export const IMG = 'https://image.tmdb.org/t/p/w342';
 
 export const VIEWS = ['home', 'search', 'swipe', 'explore', 'list'];
