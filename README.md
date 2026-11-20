@@ -47,6 +47,8 @@ Fitur lainnya:
 - **Ekspor dan impor JSON** untuk cadangan.
 - **Navigasi bawah** di HP dan tab di layar lebar.
 - **Pintasan keyboard** di halaman Swipe: panah kiri dan kanan untuk memilih, `Backspace` atau `Z` untuk membatalkan.
+- **Petunjuk pertama kali** di Swipe berupa lapisan tipis di atas kartu (geser kiri atau kanan, ketuk untuk detail) yang hilang setelah pengguna menekan **Mengerti** dan tidak muncul lagi.
+- **Getaran halus** (di perangkat yang mendukung, misalnya Android) saat kartu melewati ambang geser dan saat memilih lewat tombol. Dilewati bila pengguna memilih gerakan minimal.
 - **Alamat per halaman** lewat hash: `#home`, `#search`, `#swipe`, `#explore`, `#list`.
 
 ## Mode penggunaan
@@ -126,6 +128,7 @@ Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (m
 | `layar.omdb`, `layar.tmdb`                                    | API key milik pengguna                        |
 | `layar.theme`                                                 | Tema terang atau gelap                        |
 | `layar.skip`                                                  | Judul yang digeser ke kiri di Swipe           |
+| `layar.swipeCoach`                                            | Penanda petunjuk Swipe sudah dilihat          |
 | `layar.rc`                                                    | Riwayat pencarian                             |
 | `layar.lastBackup`, `layar.backupCount`, `layar.backupSnooze` | Waktu ekspor terakhir dan penundaan pengingat |
 

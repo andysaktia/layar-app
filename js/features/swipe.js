@@ -12,6 +12,43 @@ import { tmdb } from '../core/api.js';
 import { allWatched, tally } from '../core/tv.js';
 import { loadTvStructure } from './tvdata.js';
 
+const HINT = 'Kanan: sudah · Kiri: belum · Ketuk poster: detail';
+const COACH_KEY = 'layar.swipeCoach';
+
+/** Petunjuk pertama kali. Bila penyimpanan tidak tersedia, jangan ditampilkan agar tidak mengganggu. */
+let coachVisible = (() => {
+  try {
+    return !localStorage.getItem(COACH_KEY);
+  } catch (e) {
+    return false;
+  }
+})();
+
+/** Getaran halus (Android). Dilewati bila tidak didukung atau pengguna meminta gerakan minimal. */
+function buzz(ms) {
+  try {
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!calm && navigator.vibrate) navigator.vibrate(ms);
+  } catch (e) {}
+}
+
+function dismissCoach() {
+  if (!coachVisible) return;
+  coachVisible = false;
+  try {
+    localStorage.setItem(COACH_KEY, '1');
+  } catch (e) {}
+  const el = document.querySelector('#deck .coach');
+  if (el) el.remove();
+}
+
+const coachHtml = `<div class="coach" role="group" aria-label="Petunjuk swipe">
+  <div class="coach-l"><span class="coach-arrow" aria-hidden="true">←</span><b>Belum</b><small>Geser ke kiri</small></div>
+  <div class="coach-r"><span class="coach-arrow" aria-hidden="true">→</span><b>Sudah</b><small>Geser ke kanan</small></div>
+  <p class="coach-t">Ketuk poster untuk melihat detail</p>
+  <button type="button" class="btn pri coach-ok">Mengerti</button>
+</div>`;
+
 export let deckArr = [],
   filling = false,
   swMode = 'mix',
@@ -104,28 +141,31 @@ function renderDeck() {
     has = deckArr.length > 0;
   ['swNo', 'swYes', 'swInfo'].forEach(i => ($('#' + i).disabled = !has));
   $('#swUndo').disabled = !lastAct;
-  $('#swc').textContent = sess.n ? `Sesi ini: ${sess.n} judul · ${fmtM(sess.min)}` : '';
+  $('#swh').textContent = sess.n ? `Sesi ini: ${sess.n} judul · ${fmtM(sess.min)}` : HINT;
   if (!has) {
     box.innerHTML = `<div class="empty" style="position:absolute;inset:0;display:grid;place-content:center;gap:12px">${filling ? 'Memuat poster…' : esc(swErr || 'Pilihan habis.')}${filling ? '' : '<button class="btn pri" id="swMore">Muat lagi</button>'}</div>`;
     return;
   }
-  box.innerHTML = deckArr
-    .slice(0, 3)
-    .map(
-      (
-        c,
-        i
-      ) => `<article class="sc${i ? '' : ' top'}" style="--i:${i}">${c.p ? `<img src="${esc(c.p)}" alt="" draggable="false">` : `<div class="ph">${esc(c.name)}</div>`}
-    <div class="cap"><h3>${esc(c.name)}</h3><p>${c.t === 'tv' ? 'Drama' : 'Film'}${c.y ? ' · ' + esc(c.y) : ''}</p></div>
+  box.innerHTML =
+    deckArr
+      .slice(0, 3)
+      .map(
+        (
+          c,
+          i
+        ) => `<article class="sc${i ? '' : ' top'}" style="--i:${i}">${c.p ? `<img src="${esc(c.p)}" alt="" draggable="false">` : `<div class="ph">${esc(c.name)}</div>`}
+    <div class="cap"><h3>${esc(c.name)}</h3><p>${c.t === 'tv' ? 'Drama' : 'Film'}${c.y ? ' · ' + esc(c.y) : ''}${c.t === 'tv' ? ' · semua season dihitung' : ''}</p></div>
     <span class="stamp y">SUDAH</span><span class="stamp n">BELUM</span></article>`
-    )
-    .join('');
+      )
+      .join('') + (coachVisible ? coachHtml : '');
 }
 
-function decide(dir) {
+function decide(dir, haptic = true) {
   const c = deckArr[0];
   if (!c || busy) return;
   busy = true;
+  dismissCoach();
+  if (haptic) buzz(dir === 'yes' ? 18 : 10);
   const el = document.querySelector('#deck .sc.top');
   if (el) {
     el.style.transition = 'transform .25s,opacity .25s';
@@ -206,37 +246,88 @@ function undo() {
 
 const deck = $('#deck');
 
-const endDrag = () => {
-  if (!drag) return;
-  const { c, dx, moved } = drag;
-  drag = null;
-  if (Math.abs(dx) > 90) {
-    decide(dx > 0 ? 'yes' : 'no');
-  } else {
-    c.style.transition = 'transform .2s';
-    c.style.transform = '';
-    c.querySelectorAll('.stamp').forEach(x => (x.style.opacity = 0));
-    if (!moved && deckArr[0]) openDetail(deckArr[0].s, deckArr[0].t, deckArr[0].id);
+/** Sesuaikan ukuran kartu agar kartu dan tombol aksi muat di layar tanpa digulir. */
+export function fitDeck() {
+  const box = $('#deck');
+  if (getComputedStyle($('#swp')).display === 'none') return;
+  const mobile = !!window.matchMedia && window.matchMedia('(max-width: 759px)').matches;
+  box.style.width = '';
+  box.style.height = '';
+  const top = box.getBoundingClientRect().top + window.scrollY;
+  const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  const nav = mobile ? $('#nav').offsetHeight : 0;
+  // Sisakan tombol aksi, jarak, dan ruang agar tombol Swipe di navigasi tidak menimpanya.
+  const reserve = $('.sbar').offsetHeight + 16 + (mobile ? nav + 28 : 28);
+  let h = Math.max(200, Math.min(Math.floor(vh - top - reserve), 560));
+  let w = Math.round((h * 2) / 3);
+  const maxW = box.parentElement.clientWidth || w;
+  if (w > maxW) {
+    w = maxW;
+    h = Math.round(w * 1.5);
   }
+  box.style.height = h + 'px';
+  box.style.width = w + 'px';
+}
+
+const FLIP_DIST = 90; // jarak geser horizontal agar kartu diputuskan (px)
+const LOCK_DIST = 8; // jarak awal sebelum arah gerakan dikunci (px)
+const TAP_MOVE = 10; // gerakan maksimum yang masih dianggap ketukan (px)
+const TAP_TIME = 350; // lama maksimum ketukan (ms)
+
+/** Lepaskan jari. Hanya ketukan singkat tanpa gerakan yang membuka detail. */
+const endDrag = e => {
+  if (!drag) return;
+  const { c, dx, dy, lock, t0 } = drag;
+  drag = null;
+  const cancelled = !!e && e.type === 'pointercancel';
+  if (!cancelled && lock === 'h' && Math.abs(dx) > FLIP_DIST) {
+    decide(dx > 0 ? 'yes' : 'no', false);
+    return;
+  }
+  c.style.transition = 'transform .2s';
+  c.style.transform = '';
+  c.querySelectorAll('.stamp').forEach(x => (x.style.opacity = 0));
+  const isTap =
+    !cancelled && !lock && Math.hypot(dx, dy) < TAP_MOVE && performance.now() - t0 < TAP_TIME;
+  if (isTap && deckArr[0]) openDetail(deckArr[0].s, deckArr[0].t, deckArr[0].id);
 };
 
 export function initSwipe() {
+  window.addEventListener('resize', fitDeck);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitDeck);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitDeck);
   deck.addEventListener('pointerdown', e => {
     const c = e.target.closest('.sc.top');
     if (!c || busy) return;
-    drag = { c, x: e.clientX, dx: 0, moved: false };
-    try {
-      c.setPointerCapture(e.pointerId);
-    } catch (_) {}
+    drag = { c, x: e.clientX, y: e.clientY, dx: 0, dy: 0, lock: null, t0: performance.now() };
     c.style.transition = 'none';
   });
   deck.addEventListener('pointermove', e => {
     if (!drag) return;
     drag.dx = e.clientX - drag.x;
-    if (Math.abs(drag.dx) > 6) drag.moved = true;
+    drag.dy = e.clientY - drag.y;
+    if (!drag.lock) {
+      if (Math.hypot(drag.dx, drag.dy) < LOCK_DIST) return;
+      // Arah dikunci sekali: gerakan vertikal diabaikan sepenuhnya (tidak menggeser kartu).
+      drag.lock = Math.abs(drag.dx) > Math.abs(drag.dy) ? 'h' : 'v';
+      if (drag.lock === 'h') {
+        try {
+          drag.c.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      }
+    }
+    if (drag.lock !== 'h') return;
+    const armed = Math.abs(drag.dx) > FLIP_DIST;
+    if (armed !== !!drag.armed) {
+      drag.armed = armed;
+      if (armed) buzz(8); // tanda halus: melepas sekarang akan memutuskan kartu
+    }
     drag.c.style.transform = `translateX(${drag.dx}px) rotate(${drag.dx / 18}deg)`;
-    drag.c.querySelector('.stamp.y').style.opacity = Math.max(0, Math.min(1, drag.dx / 90));
-    drag.c.querySelector('.stamp.n').style.opacity = Math.max(0, Math.min(1, -drag.dx / 90));
+    drag.c.querySelector('.stamp.y').style.opacity = Math.max(0, Math.min(1, drag.dx / FLIP_DIST));
+    drag.c.querySelector('.stamp.n').style.opacity = Math.max(0, Math.min(1, -drag.dx / FLIP_DIST));
+  });
+  deck.addEventListener('click', e => {
+    if (e.target.closest('.coach')) dismissCoach();
   });
   deck.addEventListener('pointerup', endDrag);
   deck.addEventListener('pointercancel', endDrag);
@@ -272,6 +363,10 @@ export function initSwipe() {
       /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)
     )
       return;
+    if (coachVisible) {
+      dismissCoach();
+      return;
+    }
     if (e.key === 'ArrowRight') decide('yes');
     else if (e.key === 'ArrowLeft') decide('no');
     else if (e.key === 'Backspace' || e.key === 'z') undo();

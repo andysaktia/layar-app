@@ -154,10 +154,7 @@
           <button class="tab" data-sw="movie" aria-pressed="false">Film</button>
           <button class="tab" data-sw="tv" aria-pressed="false">Drama</button>
         </div>
-        <p class="hint">
-          Geser kanan kalau sudah nonton, kiri kalau belum. Ketuk poster untuk detail. Drama
-          dihitung semua season; mau pilih season tertentu, tambahkan lewat Cari atau Jelajah.
-        </p>
+        <p class="hint sw-hint" id="swh">Kanan: sudah · Kiri: belum · Ketuk poster: detail</p>
         <div class="deck" id="deck" aria-live="polite"></div>
         <div class="sbar">
           <button class="rb no" id="swNo" aria-label="Belum nonton">
@@ -179,7 +176,6 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
           </button>
         </div>
-        <p class="note" id="swc" style="text-align: center; margin-top: 14px"></p>
       </section>
 
       <section id="dsec" data-view="explore" style="margin-bottom: 34px">

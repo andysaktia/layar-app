@@ -3,8 +3,7 @@
   position: relative;
   width: min(340px, 100%);
   aspect-ratio: 2/3;
-  max-height: 60vh;
-  margin: 8px auto 22px;
+  margin: 6px auto 16px;
 }
 .sc {
   position: absolute;
@@ -18,7 +17,7 @@
   transition:
     transform 0.25s,
     opacity 0.25s;
-  touch-action: pan-y;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -121,4 +120,124 @@
 .rb:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+/* petunjuk satu baris, ringkas */
+.sw-hint {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+/* layar pendek: tombol aksi sedikit lebih kecil agar kartu tetap besar */
+@media (max-height: 700px) {
+  .rb {
+    width: 52px;
+    height: 52px;
+  }
+  .rb.yes {
+    width: 60px;
+    height: 60px;
+  }
+  .rb.undo,
+  .rb.info {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* HP: tab jadi kontrol tiga segmen satu baris, judul halaman disembunyikan (sudah ada di navigasi) */
+@media (max-width: 759px) {
+  #swp .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 0 0 8px;
+  }
+  #swp .tabs h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  #swp .tab {
+    padding: 8px 4px;
+    text-align: center;
+  }
+  body[data-page='swipe'] header.top {
+    padding-bottom: 8px;
+  }
+}
+
+/* ---------- petunjuk pertama kali ---------- */
+.coach {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto auto;
+  align-items: center;
+  padding: 18px 12px 16px;
+  border-radius: 20px;
+  background: rgba(8, 12, 22, 0.82);
+  color: #fff;
+  text-align: center;
+}
+.coach-l,
+.coach-r {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+.coach-l {
+  color: #ff7a7a;
+}
+.coach-r {
+  color: #4fd1c5;
+}
+.coach b {
+  font: 800 1.25rem var(--h);
+}
+.coach small {
+  color: #fff;
+  opacity: 0.8;
+  font-size: 0.82rem;
+}
+.coach-arrow {
+  font-size: 2.2rem;
+  line-height: 1;
+  animation: coach-nudge 1.4s ease-in-out infinite;
+}
+.coach-l .coach-arrow {
+  animation-name: coach-nudge-l;
+}
+@keyframes coach-nudge {
+  50% {
+    transform: translateX(8px);
+  }
+}
+@keyframes coach-nudge-l {
+  50% {
+    transform: translateX(-8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coach-arrow {
+    animation: none;
+  }
+}
+.coach-t {
+  grid-column: 1 / -1;
+  margin: 8px 0 12px;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+.coach-ok {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-width: 140px;
 }
