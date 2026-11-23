@@ -1,0 +1,52 @@
+/* Terjemahan sinopsis di modal detail: tombol, indikator kuota (lingkaran), dan hasil. */
+.tr {
+  margin: 6px 0 10px;
+}
+.tr-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ring {
+  --deg: 0deg;
+  --c: var(--ac);
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: conic-gradient(var(--c) var(--deg), var(--ln) 0);
+}
+.ring::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--sf);
+}
+.ring.warn {
+  --c: var(--am);
+}
+.ring.full {
+  --c: var(--rd);
+}
+.tr-out {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  max-height: 32vh;
+  overflow: auto;
+  border-left: 3px solid var(--ac);
+  border-radius: 0 10px 10px 0;
+  background: var(--bg);
+  line-height: 1.65;
+}
+.tr-err {
+  margin: 8px 0 0;
+  color: var(--rd);
+  font-size: 0.85rem;
+}
+.tr-note {
+  margin: 6px 0 0;
+  color: var(--mu);
+  font-size: 0.76rem;
+}

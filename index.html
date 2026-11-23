@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/navigation.css" />
     <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="css/progress.css" />
+    <link rel="stylesheet" href="css/translate.css" />
   </head>
   <body>
     <div class="wrap">
@@ -260,6 +261,17 @@
         <input type="password" id="tkey" autocomplete="off" />
       </div>
       <div class="mode">
+        <h3>Terjemahan sinopsis</h3>
+        <p class="note">
+          Sinopsis berbahasa Inggris bisa diterjemahkan ke Indonesia lewat MyMemory (gratis). Kuota
+          5.000 karakter per hari; isi email yang valid untuk 50.000. Teks sinopsis dan email
+          dikirim ke MyMemory, dan email hanya disimpan di browser ini.
+        </p>
+        <label for="mmEmail">Email (opsional)</label>
+        <input type="email" id="mmEmail" autocomplete="email" placeholder="nama@contoh.com" />
+        <p class="note" id="trQuotaText" style="margin-top: 6px"></p>
+      </div>
+      <div class="mode">
         <h3>Data</h3>
         <p class="note">
           Daftar tontonan hanya tersimpan di browser ini. Simpan cadangan sebelum membersihkan data
@@ -384,6 +396,15 @@
         </div>
       </div>
       <p class="ov" id="dOv"></p>
+      <div class="tr" id="dTr" hidden>
+        <div class="tr-row">
+          <button class="btn sm" id="dTrBtn" type="button">Terjemahkan ke Indonesia</button>
+          <span class="ring" id="dTrRing" role="img"></span>
+        </div>
+        <p class="tr-out" id="dTrOut" lang="id" hidden></p>
+        <p class="tr-err" id="dTrErr" role="alert" hidden></p>
+        <p class="tr-note" id="dTrNote"></p>
+      </div>
       <dl id="dRows"></dl>
       <div class="acts">
         <button class="btn" id="dClose">Tutup</button

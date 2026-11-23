@@ -41,6 +41,7 @@
 Fitur lainnya:
 
 - **Modal detail**: judul, sinopsis, tahun, durasi, rating, genre, sutradara dan pemeran.
+- **Terjemahkan sinopsis ke Indonesia** dengan satu tombol di modal detail (sinopsis Inggris atau Ibrani). Hasil mengembang di bawah sinopsis dan bisa disembunyikan; teks panjang dipecah per kalimat sesuai batas API; potongan yang pernah diterjemahkan disimpan sehingga tidak memakai kuota lagi; ada indikator kuota harian berbentuk lingkaran; dan email opsional di Pengaturan menaikkan kuota. Sinopsis yang sudah berbahasa Indonesia tidak menampilkan tombol. Cara kerjanya mengikuti [translate-id](https://github.com/andysaktia/translate-id).
 - **Progres drama per episode**: tiap season punya penggeser dan tombol +/−, dengan persen progres dan total menit yang langsung dihitung dari durasi tiap episode. Bisa dipakai saat menambah drama maupun memperbarui dari halaman Daftar (tombol **Perbarui**, bar progres, filter **Belum tamat**, dan **Cek episode baru** untuk serial yang masih tayang).
 - **Tema gelap dan terang** (gelap sebagai bawaan).
 - **PWA**: bisa dipasang ke layar utama, dan beranda, total, serta daftar bisa dibuka offline.
@@ -122,15 +123,16 @@ Semua path di aplikasi bersifat relatif, jadi Layar juga berjalan di sub-path (m
 - Tidak ada server milik Layar, dan tidak ada data pengguna yang dikirim ke pihak lain selain permintaan pencarian ke API publik (TVmaze, OMDb, TMDB) langsung dari browser.
 - Data disimpan di `localStorage` browser:
 
-| Kunci                                                         | Isi                                           |
-| ------------------------------------------------------------- | --------------------------------------------- |
-| `layar.items`                                                 | Daftar tontonan                               |
-| `layar.omdb`, `layar.tmdb`                                    | API key milik pengguna                        |
-| `layar.theme`                                                 | Tema terang atau gelap                        |
-| `layar.skip`                                                  | Judul yang digeser ke kiri di Swipe           |
-| `layar.swipeCoach`                                            | Penanda petunjuk Swipe sudah dilihat          |
-| `layar.rc`                                                    | Riwayat pencarian                             |
-| `layar.lastBackup`, `layar.backupCount`, `layar.backupSnooze` | Waktu ekspor terakhir dan penundaan pengingat |
+| Kunci                                                         | Isi                                                                     |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `layar.items`                                                 | Daftar tontonan                                                         |
+| `layar.omdb`, `layar.tmdb`                                    | API key milik pengguna                                                  |
+| `layar.theme`                                                 | Tema terang atau gelap                                                  |
+| `layar.skip`                                                  | Judul yang digeser ke kiri di Swipe                                     |
+| `layar.swipeCoach`                                            | Penanda petunjuk Swipe sudah dilihat                                    |
+| `layar.trCache`, `layar.trQuota`, `layar.mmEmail`             | Cache terjemahan, perkiraan kuota harian, dan email MyMemory (opsional) |
+| `layar.rc`                                                    | Riwayat pencarian                                                       |
+| `layar.lastBackup`, `layar.backupCount`, `layar.backupSnooze` | Waktu ekspor terakhir dan penundaan pengingat                           |
 
 - Membersihkan data browser menghapus semuanya. Gunakan **Ekspor** di Pengaturan sebagai cadangan, dan **Impor** untuk memulihkannya.
 - Ekspor hanya berisi daftar tontonan, **tidak** menyertakan API key.
@@ -208,7 +210,8 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
 │   ├── swipe.css              # mode Swipe cepat
 │   ├── navigation.css         # navigasi bawah dan tab
 │   ├── components.css         # dialog, formulir, detail, toast, footer
-│   └── progress.css           # dialog progres drama dan kartu progres di Daftar
+│   ├── progress.css           # dialog progres drama dan kartu progres di Daftar
+│   └── translate.css          # tombol terjemahan sinopsis dan indikator kuota
 └── js/
     ├── main.js                # titik masuk: merangkai modul dan menjalankan aplikasi
     ├── theme-init.js          # menerapkan tema sebelum halaman digambar
@@ -219,6 +222,10 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
     │   ├── utils.js           # helper DOM, format, toast
     │   ├── keys.js            # penanda sumber data pada kunci judul
     │   ├── tv.js              # hitung progres drama (episode, menit, persen)
+    │   ├── text.js            # deteksi bahasa, pembersih nikud, pemecah teks
+    │   ├── trcache.js         # cache terjemahan di localStorage
+    │   ├── quota.js           # perkiraan kuota harian dan email MyMemory
+    │   ├── translate.js       # klien API MyMemory (en/he ke id)
     │   └── api.js             # klien TVmaze, OMDb, TMDB
     ├── data/
     │   └── demo.js            # data contoh (dummy) untuk Mode Contoh
@@ -229,6 +236,7 @@ Setiap entri membawa awalan sumber di kuncinya (`movie-…` OMDb, `tv-…` TVmaz
     │   ├── detail.js
     │   ├── progress.js        # dialog progres drama (tambah dan perbarui)
     │   ├── tvdata.js          # memuat struktur episode drama dari API
+    │   ├── translation.js     # tombol terjemahan sinopsis di modal detail
     │   └── swipe.js
     └── ui/                    # tampilan dan interaksi umum
         ├── render.js          # ringkasan, daftar, beranda
@@ -273,6 +281,7 @@ Layar memakai data dari layanan berikut. Hormati syarat masing-masing, terutama 
 
 - **TVmaze** (<https://www.tvmaze.com>): data drama dan serial. Berlisensi CC BY-SA, wajib mencantumkan atribusi.
 - **OMDb API** (<https://www.omdbapi.com>): data film. Menurut ringkasan di beberapa paket pihak ketiga, konten OMDb berlisensi CC BY-NC dan untuk pemakaian non-komersial. Cek syarat terbaru di situs resminya.
+- **MyMemory** (<https://mymemory.translated.net>): terjemahan mesin sinopsis ke bahasa Indonesia, gratis dengan kuota harian (5.000 karakter, atau 50.000 dengan email). Hasilnya bisa kurang akurat. Teks sinopsis yang diterjemahkan dan email opsional dikirim ke layanan ini.
 - **TMDB** (<https://www.themoviedb.org>): _This product uses the TMDB API but is not endorsed or certified by TMDB._ Gratis untuk pemakaian non-komersial. Pemakaian komersial memerlukan perjanjian tertulis dengan TMDB. Syarat TMDB juga meminta logo TMDB bila aplikasi dipublikasikan, jadi tambahkan logonya sebelum dibagikan luas.
 
 Poster di Mode Contoh dibuat secara lokal dan bukan karya dari film atau drama sungguhan. Semua judul, sinopsis, dan nama di data contoh adalah fiksi.

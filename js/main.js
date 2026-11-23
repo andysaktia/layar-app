@@ -14,6 +14,7 @@ import { initRender, render } from './ui/render.js';
 import { initUndo } from './ui/undo.js';
 import { initSearch, renderRecent, setHint } from './features/search.js';
 import { initSwipe } from './features/swipe.js';
+import { initTranslation } from './features/translation.js';
 import { maybePersist } from './core/storage.js';
 import { save, state } from './core/state.js';
 
@@ -27,6 +28,7 @@ initUndo();
 initNav();
 initExplore();
 initDetail();
+initTranslation();
 initSwipe();
 initPwa();
 

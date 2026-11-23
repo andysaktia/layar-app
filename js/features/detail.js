@@ -5,6 +5,7 @@ import { IMG } from '../core/config.js';
 import { K } from '../core/keys.js';
 import { getJSON, omdb, tmdb } from '../core/api.js';
 import { onAdd } from './add.js';
+import { hideTranslation, setupTranslation } from './translation.js';
 import { state } from '../core/state.js';
 
 async function detail(s, t, id) {
@@ -119,6 +120,7 @@ export async function openDetail(s, t, id) {
   $('#dMeta').textContent = '';
   $('#dGen').innerHTML = '';
   $('#dOv').textContent = '';
+  hideTranslation();
   $('#dRows').innerHTML = '';
   $('#dImg').innerHTML = '<div class="ph"></div>';
   a.hidden = true;
@@ -138,6 +140,7 @@ export async function openDetail(s, t, id) {
   $('#dMeta').textContent = x.meta.filter(Boolean).join(' · ');
   $('#dGen').innerHTML = x.genres.map(g => `<span>${esc(g)}</span>`).join('');
   $('#dOv').textContent = x.overview || 'Sinopsis belum tersedia untuk judul ini.';
+  setupTranslation(x.overview);
   $('#dRows').innerHTML = x.rows
     .filter(Boolean)
     .map(r => `<div><dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd></div>`)

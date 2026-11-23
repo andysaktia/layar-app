@@ -4,6 +4,7 @@ import { addItem, save, state } from '../core/state.js';
 import { demoMode, demoSeen } from '../data/demo.js';
 import { loadGenres, resetExplore } from '../features/explore.js';
 import { refreshDataStatus } from './backup.js';
+import { getEmail, isValidEmail, quotaInfo, setEmail } from '../core/quota.js';
 import { refreshExplore } from './nav.js';
 import { render } from './render.js';
 import { resetDeck } from '../features/swipe.js';
@@ -26,6 +27,10 @@ export function updMode() {
 export const openSet = () => {
   $('#key').value = state.omdbKey;
   $('#tkey').value = state.tmdbKey;
+  $('#mmEmail').value = getEmail();
+  const q = quotaInfo();
+  $('#trQuotaText').textContent =
+    `Kuota terjemahan hari ini: ±${q.used.toLocaleString('id-ID')} dari ${q.limit.toLocaleString('id-ID')} karakter (perkiraan).`;
   updMode();
   refreshDataStatus();
   $('#dSet').showModal();
@@ -64,6 +69,12 @@ export function initSettings() {
   };
   $('#dSet .btn[value=x]').onclick = () => $('#dSet').close();
   $('#saveKey').onclick = () => {
+    const email = $('#mmEmail').value.trim();
+    if (email && !isValidEmail(email)) {
+      toast('Email tidak valid. Perbaiki atau kosongkan kolomnya.');
+      return;
+    }
+    setEmail(email);
     state.omdbKey = $('#key').value.trim();
     state.tmdbKey = $('#tkey').value.trim();
     try {

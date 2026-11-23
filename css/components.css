@@ -172,6 +172,7 @@ label {
 dialog input[type='text'],
 dialog input[type='number'],
 dialog input[type='password'],
+dialog input[type='email'],
 dialog select {
   width: 100%;
   background: var(--bg);
