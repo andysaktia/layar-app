@@ -358,6 +358,7 @@
         <div class="tv-quick">
           <button class="btn sm" id="tvAll" type="button">Tandai semua</button>
           <button class="btn sm" id="tvNone" type="button">Kosongkan</button>
+          <button class="btn sm" id="tvAgain" type="button">Tonton ulang (+1)</button>
           <button class="btn sm" id="tvSync" type="button" hidden>Cek episode baru</button>
         </div>
       </div>
@@ -386,6 +387,21 @@
         <button class="btn" id="mX">Batal</button><button class="btn pri" id="mOk">Simpan</button>
       </div>
     </dialog>
+    <dialog id="dPlay" aria-labelledby="pyT">
+      <h2 id="pyT"></h2>
+      <p class="note">Berapa kali kamu sudah menonton ini?</p>
+      <div class="py-step">
+        <button class="btn" id="pyMinus" type="button" aria-label="Kurangi satu kali">−</button>
+        <output id="pyN" aria-live="polite">1×</output>
+        <button class="btn" id="pyPlus" type="button" aria-label="Tambah satu kali">+</button>
+      </div>
+      <p class="note" id="pySum" style="text-align: center"></p>
+      <div class="acts">
+        <button class="btn" id="pyX" type="button">Batal</button
+        ><button class="btn pri" id="pyOk" type="button">Simpan</button>
+      </div>
+    </dialog>
+
     <dialog id="dDet" aria-labelledby="dTi">
       <div class="det">
         <div id="dImg"></div>

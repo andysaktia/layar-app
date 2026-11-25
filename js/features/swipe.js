@@ -9,7 +9,7 @@ import { openDetail } from './detail.js';
 import { randMv, randTv } from './explore.js';
 import { render } from '../ui/render.js';
 import { tmdb } from '../core/api.js';
-import { allWatched, tally } from '../core/tv.js';
+import { allPlays, tally } from '../core/tv.js';
 import { loadTvStructure } from './tvdata.js';
 
 const HINT = 'Kanan: sudah · Kiri: belum · Ketuk poster: detail';
@@ -191,8 +191,8 @@ function decide(dir, haptic = true) {
 
 async function addTvAll(s, id) {
   const st = await loadTvStructure(s, id);
-  const watched = allWatched(st.seasons);
-  const { min, eps } = tally(st.seasons, watched);
+  const plays = allPlays(st.seasons);
+  const { min, eps } = tally(st.seasons, plays);
   addItem({
     key: K(s, 'tv', id),
     type: 'tv',
@@ -202,7 +202,7 @@ async function addTvAll(s, id) {
     minutes: min,
     eps,
     seasons: st.seasons,
-    watched,
+    plays,
   });
   save();
   render();

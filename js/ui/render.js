@@ -2,7 +2,9 @@
 import { $, W, esc, fmtM, nf, toast } from '../core/utils.js';
 import { dAttr } from '../core/keys.js';
 import { state } from '../core/state.js';
-import { pctOf, totalEps } from '../core/tv.js';
+import { blockPlays, itemBase, totalRewatch } from '../core/plays.js';
+import { pctOf, playsOf, tally, totalEps } from '../core/tv.js';
+import { openPlayCount } from '../features/playcount.js';
 import { openTvEdit } from '../features/progress.js';
 import { updBackupBar } from './backup.js';
 import { removeWithUndo } from './undo.js';
@@ -24,11 +26,12 @@ export function render() {
   const eps = tv.reduce((a, i) => a + (i.eps || 0), 0);
   renderHome();
   updBackupBar();
+  const re = totalRewatch(state.items);
   $('#libTot').textContent = tot
     ? `Total ${nf(d)} hari ${h} jam ${m} menit · ${nf(state.items.length)} judul`
     : '';
   $('#sub').textContent = tot
-    ? `Itu ${nf(Math.round(tot / 60))} jam nonton, setara ${((tot / 60 / 24 / 365) * 100).toFixed(2).replace('.', ',')}% dari satu tahun penuh tanpa tidur.`
+    ? `Itu ${nf(Math.round(tot / 60))} jam nonton, setara ${((tot / 60 / 24 / 365) * 100).toFixed(2).replace('.', ',')}% dari satu tahun penuh tanpa tidur.${re.count ? ` Termasuk ${nf(re.count)}× tontonan ulang (${fmtM(re.minutes)}).` : ''}`
     : 'Cari judul di bawah dan tandai yang sudah kamu tonton. Totalnya langsung dihitung di sini.';
   $('#split').innerHTML = tot
     ? `<div style="width:${(mm / tot) * 100}%;background:var(--am)"></div><div style="width:${(tm / tot) * 100}%;background:var(--tl)"></div>`
@@ -56,14 +59,27 @@ export function render() {
     : `<div class="empty" style="grid-column:1/-1">${state.items.length ? 'Belum ada di kategori ini.' : 'Belum ada tontonan. Mulai dengan mencari satu judul favoritmu.'}</div>`;
 }
 
-/** Progres drama di kartu Daftar, dan tombol untuk memperbarui. */
+/** Progres dan tontonan ulang di kartu Daftar, beserta tombol untuk mengubahnya. */
 function progressBlock(i) {
-  if (i.type !== 'tv' || !dAttr(i.key)) return '';
   const key = esc(i.key);
-  if (!i.seasons) return `<button class="upd" data-upd="${key}">Atur progres</button>`;
-  const pct = pctOf(i.eps, i.seasons);
-  const label = pct >= 100 ? '✓ Selesai' : `${i.eps}/${totalEps(i.seasons)} eps · ${pct}%`;
-  return `<div class="prog"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Progres ${esc(i.title)}"><i style="width:${pct}%"></i></div><span>${label}</span></div><button class="upd" data-upd="${key}">Perbarui</button>`;
+  if (i.seasons) {
+    const p = playsOf(i);
+    if (!p) return '';
+    const t = tally(i.seasons, p);
+    const pct = pctOf(t.eps, i.seasons);
+    const label =
+      (pct >= 100 ? '✓ Selesai' : `${t.eps}/${totalEps(i.seasons)} eps · ${pct}%`) +
+      (t.extra ? ` · ↻ ${t.extra}×` : '');
+    return `<div class="prog"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Progres ${esc(i.title)}"><i style="width:${pct}%"></i></div><span>${label}</span></div><button class="upd" data-upd="${key}">Perbarui</button>`;
+  }
+  if (i.type === 'tv' && dAttr(i.key)) {
+    return `<button class="upd" data-upd="${key}">Atur progres</button>`;
+  }
+  // Film atau judul manual: durasi sekali tonton dikali jumlah tonton.
+  const n = blockPlays(i);
+  const info =
+    n > 1 ? `<div class="prog"><span>Ditonton ${n}× · ↻ ${n - 1}× ulang</span></div>` : '';
+  return `${info}<button class="upd" data-play="${key}">${n > 1 ? 'Ubah jumlah tonton' : 'Tonton ulang'}</button>`;
 }
 
 function renderHome() {
@@ -72,8 +88,7 @@ function renderHome() {
   $('#hx').hidden = !n;
   if (!n) return;
   const mv = state.items.filter(i => i.type === 'movie'),
-    tv = state.items.filter(i => i.type === 'tv'),
-    tot = state.items.reduce((a, i) => a + i.minutes, 0);
+    tv = state.items.filter(i => i.type === 'tv');
   const now = new Date(),
     mon = state.items
       .filter(i => {
@@ -82,16 +97,19 @@ function renderHome() {
         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
       })
       .reduce((a, i) => a + i.minutes, 0);
-  const lg = state.items.reduce((a, i) => (i.minutes > a.minutes ? i : a), state.items[0]),
+  const lg = state.items.reduce((a, i) => (itemBase(i) > itemBase(a) ? i : a), state.items[0]),
+    base = state.items.reduce((a, i) => a + itemBase(i), 0),
+    re = totalRewatch(state.items),
     eps = tv.reduce((a, i) => a + (i.eps || 0), 0);
   const T = (l, v, s) => `<div class="tile"><p>${l}</p><b>${v}</b><span>${s}</span></div>`;
   $('#tiles').innerHTML =
     T('Judul', nf(n), 'dicatat') +
     T('Film', nf(mv.length), nf(Math.round(mv.reduce((a, i) => a + i.minutes, 0) / 60)) + ' jam') +
     T('Drama', nf(tv.length), eps ? nf(eps) + ' episode' : 'serial') +
-    T('Rata-rata', fmtM(Math.round(tot / n)), 'per judul') +
+    T('Rata-rata', fmtM(Math.round(base / n)), 'per judul') +
     T('Bulan ini', fmtM(mon), 'dicatat bulan ini') +
-    T('Terlama', fmtM(lg.minutes), esc(lg.title));
+    T('Tonton ulang', nf(re.count) + '×', fmtM(re.minutes)) +
+    T('Terlama', fmtM(itemBase(lg)), esc(lg.title));
   const M = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000],
     nx = M.find(x => x > n) || n + 1000,
     pv = [...M].reverse().find(x => x <= n) || 0;
@@ -114,6 +132,11 @@ export function initRender() {
     const x = e.target.closest('.x');
     if (x) {
       removeWithUndo(x.dataset.k);
+      return;
+    }
+    const py = e.target.closest('[data-play]');
+    if (py) {
+      openPlayCount(py.dataset.play);
       return;
     }
     const u = e.target.closest('.upd');
